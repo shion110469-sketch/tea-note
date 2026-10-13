@@ -91,11 +91,14 @@
     const stockRecs = Recommend.fromStock(3);
     const discover = Recommend.discover(3);
     const recent = [...Store.notes].sort((a, b) => b.date - a.date).slice(0, 3);
-    const d = new Date();
+    const d = new Date(), h = d.getHours();
+    const greet = h < 4 ? 'こんばんは' : h < 11 ? 'おはようございます' : h < 17 ? 'こんにちは' : 'こんばんは';
+    const week = '日月火水木金土'[d.getDay()];
     return `
       <section class="hero">
-        <p class="eyebrow">${d.getMonth() + 1}月${d.getDate()}日</p>
-        <h1>今日の一杯を選びましょう</h1>
+        <span class="hero-cup">${ICONS.cup}</span>
+        <p class="eyebrow">${d.getMonth() + 1}月${d.getDate()}日（${week}）</p>
+        <h1>${greet}。<br>今日の一杯を選びましょう</h1>
       </section>
       <div class="quick">
         <button data-act="go" data-to="timer"><span class="qi">${ICONS.timer}</span>タイマー</button>
@@ -236,6 +239,7 @@
 
       <div class="ring-wrap">
         <svg viewBox="0 0 240 240" class="ring" aria-hidden="true">
+          <defs><linearGradient id="ring-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" class="ring-stop-1"/><stop offset="1" class="ring-stop-2"/></linearGradient></defs>
           <circle cx="120" cy="120" r="110" class="ring-bg"/>
           <circle cx="120" cy="120" r="110" class="ring-fg" id="ring-fg" stroke-dasharray="${RING}" stroke-dashoffset="0"/>
         </svg>
