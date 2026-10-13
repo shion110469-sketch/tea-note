@@ -1,7 +1,21 @@
 {
-  "updatedAt": "2026-10-13T13:32:18Z",
+  "updatedAt": "2026-10-13T18:11:34Z",
   "source": "Google News",
   "items": [
+    {
+      "title": "【茨城県｜水戸プラザホテル】秋の訪れを感じる、旬の食材を贅沢に使用したアフタヌーンティーセットが登場",
+      "source": "ニコニコニュース",
+      "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE1DdnFBUHE3V3luSXlRakFRM01QdTR3cnpZcWc0aG0zWDlmeURyNXBfSTZFV1EwSTllSkZhN2w4NjRCU0dIWDYyWk1iUXFLUS1jMHB2Mjc4VlBReGlwTm9wejItMXV1dm02aDc2TERZMXNQRFpSY3U2TnF6WQ?oc=5",
+      "publishedAt": "2026-10-13T16:30:22Z",
+      "query": "アフタヌーンティー"
+    },
+    {
+      "title": "鳥海山と白神山地、秋田の2つの名水で淹れるお茶と美食のマリアージュ～2日間限定イベント「茶薫る美食時間」を、初開催！",
+      "source": "ニコニコニュース",
+      "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE83bkVoRmsyN2U0cFJCaWVBS244NXR4dVJkWDRwQkdoZXU2Q3FKUGc2ejFYU2pGUlZQa2lRXzNucUt0bmdhUWYzMFFzUGhESXJ2VGFEZWJMbUpFeVZxS1VWQ0RsZVpKZHNBTElySVRSMmU1ZXAxTWc?oc=5",
+      "publishedAt": "2026-10-13T14:15:29Z",
+      "query": "紅茶"
+    },
     {
       "title": "【Afternoon Tea】「ルーブル美術館展 ルネサンス」コラボ！葡萄とベリーのジュレッティーソーダは見た目も味も◎でした【TEAROOM】",
       "source": "LEE",
@@ -24,17 +38,17 @@
       "query": "アフタヌーンティー"
     },
     {
-      "title": "【茨城県｜水戸プラザホテル】秋の訪れを感じる、旬の食材を贅沢に使用したアフタヌーンティーセットが登場",
-      "source": "福島民報デジタル",
-      "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTFBQU2FhOWxBNnJyVXNTRlkwVFRVTXVHallQM0poX1R3NFBwaGZHR2hwT0RSbURlMGFWV2k0bzRxcEVyeTdQTlFzMzNpNW54RUkxZk5RSGZMSnl1YzdqNERHbTlUNkhHTms?oc=5",
-      "publishedAt": "2026-10-13T10:19:45Z",
-      "query": "アフタヌーンティー"
-    },
-    {
       "title": "ハウステンボス“ミッフィー型スタンド”のクリスマスアフタヌーンティー、ふわふわリースのぬいぐるみも",
       "source": "千葉テレビ放送株式会社",
       "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTFBIUjdkTWE5S2NqckdyWXJOV28taG5BTUFmdFpJQi11YXFQX1g5UmowMXBrcGdJS2V6WHJBMkQtNnJiZ0c0NG5vUUpLZGVqVjZxWDhSbGlpcjBCal9lZFJ3?oc=5",
       "publishedAt": "2026-10-13T10:07:21Z",
+      "query": "アフタヌーンティー"
+    },
+    {
+      "title": "2026年クリスマスアフタヌーンティー特集【全国編】高級ホテル＆人気カフェの冬限定スイーツ",
+      "source": "ファッションプレス",
+      "url": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE1UZnEzY2NyajhpQ2ZqZlFwbDBGQnhFTGZWWGZTYlB0QlpkdTIyeG84WG9rM2VSMmVjTGs4eHF6a19pUWRQSWxuYVdrTURxUUktTjA0?oc=5",
+      "publishedAt": "2026-10-13T09:26:45Z",
       "query": "アフタヌーンティー"
     },
     {
@@ -63,13 +77,6 @@
       "source": "ファッションプレス",
       "url": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE9hWlc3OGlkTi04dVR6cFRyUl83bGM4ZmlDSW56V0RSZzk1aXFxYmhVTFI2cUJwY2tVUFNsOTFMSDNIWkZkOUdNY0hvZkhONGtfNlQ4?oc=5",
       "publishedAt": "2026-10-13T07:20:00Z",
-      "query": "アフタヌーンティー"
-    },
-    {
-      "title": "鳥海山と白神山地、秋田の2つの名水で淹れるお茶と美食のマリアージュ～2日間限定イベント「茶薫る美食時間」を、初開催！",
-      "source": "毎日キレイ",
-      "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTE9CNEpJZUZ2TXp0c0dsYlB2dmw3eDJRM0pfLVV1czQwR1FIQWE3ZTdTMUlMU3JBVUF4WVZ4N3oxbVFfMTVlVmdMX0hiMVMydjVOWlpqTHZoOGZHUGhTRlhSLVowWXlra1FCak85Y09WWW53RkhZQzJPakJB?oc=5",
-      "publishedAt": "2026-10-13T07:19:09Z",
       "query": "アフタヌーンティー"
     },
     {
@@ -152,7 +159,7 @@
     {
       "title": "映画の世界をお家で再現！ 【アフタヌーンティー】「ハリー・ポッターコラボ」が10/14発売。ブラック家の家系図の壁紙やランプなどインテリアも展開（朝日新聞デジタルマガジン＆［and］）",
       "source": "Yahoo!ニュース",
-      "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE5HR3BPaHdyZGstWlN1SWM2RzFSOE9yN3JmUWRzWjQyMXFlUnZXZExWckVzZUtvamthbDQ0SGJlVTFpdEpNTHBSaHJBTTZFX1Uwa1dUa0tDa212WjA0UkxiNjMta2RrdThNOVhnbnJqSXp4M1ZVNFJrSjZMQUctZlU?oc=5",
+      "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxQcUxrOGxXTWtxNTVWNjdUVjM2Vkp5U0c1T1ZrcmxBcW5yaXduWGpyRm1KcTNENTRReUowVi15MHRhNlRmaWQ5NXk3V2NEZTY0NFhMWjAtdE5sSy1kZFlWUjdMQVd5djNVSl9FdGFIUlVUTHFxRGFMMW9GUXliTWJHcmJ0dGNlekc1?oc=5",
       "publishedAt": "2026-10-13T05:10:40Z",
       "query": "アフタヌーンティー"
     },
@@ -161,13 +168,6 @@
       "source": "千葉テレビ放送株式会社",
       "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE9MZGZzQk1xVXlTMXNBazN4eHBHUWoxWjA5YW1TNmRpVEZYV2pxOG0ybW5tWDdVaGlFb2kxbHVMUHB2V2xNNHkya3FLNHczQVRPQllkQ2VGMGFFVU5Ld3dv?oc=5",
       "publishedAt": "2026-10-13T05:07:27Z",
-      "query": "紅茶"
-    },
-    {
-      "title": "ファン待望の復活! ローソン、マチカフェ「アイスミルクティー」を発売",
-      "source": "au Webポータル",
-      "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE1wb2Q2WFFYNjNsV0MwcVJGdUpIWGpVOUE3MjFwOTdUYTdfN1dKUk04VjVPQkdqSUw4ejFrbkxBZVRzUUUySm1tenZ4dlJaT3VYSThEcE02VWNTV2M3Z05KLVlLc1B4dURUNFlVVXZ3?oc=5",
-      "publishedAt": "2026-10-13T02:51:00Z",
       "query": "紅茶"
     },
     {
@@ -217,13 +217,6 @@
       "source": "静岡新聞DIGITAL",
       "url": "https://news.google.com/rss/articles/CBMiTkFVX3lxTE1MUW5ibmw0MjBEMG1nREt2ajEwRndEdFRfLXZhcUlCTnl1QUZvMFRVa3QyY0R5VnBzcFdTcEVaRzBKQzFaOVRYTmZ2eVA5dw?oc=5",
       "publishedAt": "2026-10-08T23:47:00Z",
-      "query": "和紅茶"
-    },
-    {
-      "title": "【IBUKI bottled tea × 稲とアガベ】マスカットのような香りが特徴のコラボレーションクラフトサケ「稲と和紅茶」が新登場！",
-      "source": "CLASSY.[クラッシィ]",
-      "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE5sd21SQnl4Z2pqRDIxMlJiZkJ5eW1oYk0ydUJ6Z0VPMTNJcXk3OENsZkJidWprZ1RUZnVxMVVNNTI2b3diVkR6WnlOck1uSFh2MXAxTnR1MTM?oc=5",
-      "publishedAt": "2026-10-08T08:16:26Z",
       "query": "和紅茶"
     },
     {
@@ -280,6 +273,13 @@
       "source": "PR TIMES",
       "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE5Ud2NieE5lRWlEMl90MkdUQWxLQTItbTYtc0FydDd1Q21CREFpbldHRkRtdzdlbjVyZXd1UnlrRWVWanpHTHZkR2tiMk9vNG1DSUQxSFhUNi1oVUs0YXVwTGZad2dYNTZOcXc?oc=5",
       "publishedAt": "2026-10-05T06:17:25Z",
+      "query": "和紅茶"
+    },
+    {
+      "title": "「和紅茶」味わって 後楽園で収穫した茶葉加工 ７００個限定",
+      "source": "山陽新聞",
+      "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE5mYTB6Y3VBN3Y5Mkx5cUhhSW0ycjFCM0d1dWJwS0VTVkRpNDRiVzJOR2N4UEFxQkFFb2duS3c0N1NzQ2JvTWh1X3RRY1E3c0l1SlZPalZvandPRlFIdkRobHNPd0EzdEE?oc=5",
+      "publishedAt": "2026-10-02T07:00:00Z",
       "query": "和紅茶"
     }
   ]
