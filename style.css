@@ -212,6 +212,16 @@ input:not([type=checkbox]):not([type=range]):not([type=file]), select, textarea 
 .backup summary { cursor: pointer; }
 .backup > * + * { margin-top: 8px; }
 
+/* ---- ニュース ---- */
+.sec-row { margin-top: 10px; }
+.sec-row .sec { margin-top: 0; }
+.link-btn { border: 0; background: none; color: var(--accent); font-weight: 700; font-size: 13px; cursor: pointer; padding: 4px 0; }
+.news-item { gap: 4px; }
+.news-item h3 { font-size: 15px; font-weight: 700; }
+.news-meta { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--muted); }
+.news-meta span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.news-meta span:last-child { white-space: nowrap; }
+
 /* ---- ガイド ---- */
 .guide-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
 .guide-card .num { font-size: 20px; font-weight: 700; color: var(--accent); }

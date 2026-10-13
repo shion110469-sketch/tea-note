@@ -29,9 +29,10 @@
     const routes = {
       home: viewHome, timer: viewTimer, notes: viewNotes, teas: viewTeas,
       tea: () => viewTeaDetail(arg), guide: () => (arg ? viewGuideDetail(arg) : viewGuides()),
+      news: viewNews,
     };
     view.innerHTML = (routes[name] || viewHome)();
-    const tab = name === 'tea' ? 'teas' : name;
+    const tab = { tea: 'teas', news: 'home' }[name] || name;
     $$('.tabbar a').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
     const key = name + '/' + arg;
     if (key !== lastRoute) { window.scrollTo(0, 0); lastRoute = key; }
@@ -126,9 +127,73 @@
           </div>
         </article>`).join('')}</div>
 
+      ${homeNews()}
+
       <h2 class="sec">最近の記録</h2>
       ${recent.length ? `<div class="stack">${recent.map(noteCard).join('')}</div>`
         : empty('飲んだ紅茶の感想を記録すると、好みに合わせた提案が届きます', '<button class="btn" data-act="new-note">最初の記録をつける</button>')}
+    `;
+  }
+
+  // ---------- ニュース ----------
+  // news.json は GitHub Actions が定期的に更新する（scripts/fetch-news.ps1）
+  let news = null, newsState = 'idle', newsFilter = '';
+
+  function loadNews() {
+    if (newsState !== 'idle') return; // 失敗時は「再読み込み」ボタンで idle に戻す
+    newsState = 'loading';
+    fetch('news.json', { cache: 'no-cache' })
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(d => { news = d; newsState = 'ok'; })
+      .catch(() => { newsState = 'error'; })
+      .finally(() => { if (['home', 'news'].includes(parseHash().name)) render(); });
+  }
+
+  function relTime(iso) {
+    const min = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
+    if (min < 60) return `${Math.max(min, 1)}分前`;
+    if (min < 60 * 24) return `${Math.floor(min / 60)}時間前`;
+    if (min < 60 * 24 * 7) return `${Math.floor(min / 1440)}日前`;
+    return fmtDate(iso);
+  }
+
+  function newsItem(it) {
+    if (!/^https?:\/\//.test(it.url || '')) return '';
+    return `
+      <a class="card news-item" href="${esc(it.url)}" target="_blank" rel="noopener noreferrer">
+        <p class="news-meta"><span>${esc(it.source || '')}</span><span>${relTime(it.publishedAt)}</span></p>
+        <h3>${esc(it.title)}</h3>
+      </a>`;
+  }
+
+  function homeNews() {
+    loadNews();
+    if (newsState !== 'ok' || !news.items || !news.items.length) return '';
+    return `
+      <div class="row between sec-row">
+        <h2 class="sec">紅茶のニュース</h2>
+        <button class="link-btn" data-act="go" data-to="news">すべて見る ›</button>
+      </div>
+      <div class="stack">${news.items.slice(0, 3).map(newsItem).join('')}</div>`;
+  }
+
+  function viewNews() {
+    loadNews();
+    const head = `<button class="back" data-act="go" data-to="home">‹ ホーム</button><div class="page-head"><h1>紅茶のニュース</h1></div>`;
+    if (newsState === 'loading' || newsState === 'idle') return head + '<p class="muted">読み込み中…</p>';
+    if (newsState === 'error' || !news.items) {
+      return head + empty('ニュースを読み込めませんでした', '<button class="btn" data-act="news-retry">再読み込み</button>');
+    }
+    const topics = [...new Set(news.items.map(i => i.query).filter(Boolean))];
+    const items = news.items.filter(i => !newsFilter || i.query === newsFilter);
+    return `
+      ${head}
+      <div class="chips pick">
+        <button class="chip ${newsFilter ? '' : 'on'}" data-act="news-filter" data-q="">すべて</button>
+        ${topics.map(t => `<button class="chip ${newsFilter === t ? 'on' : ''}" data-act="news-filter" data-q="${esc(t)}">${esc(t)}</button>`).join('')}
+      </div>
+      <div class="stack">${items.map(newsItem).join('')}</div>
+      <p class="muted center">${esc(news.source || '')}より・${relTime(news.updatedAt)}に更新<br>記事は各配信元のサイトで開きます</p>
     `;
   }
 
@@ -639,6 +704,8 @@
       });
     },
     'sheet-close': () => closeSheet(),
+    'news-filter': el => { newsFilter = el.dataset.q; render(); },
+    'news-retry': () => { newsState = 'idle'; render(); },
     'timer-start': () => Timer.start(),
     'timer-pause': () => Timer.pause(),
     'timer-reset': () => Timer.reset(),
