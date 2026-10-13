@@ -32,7 +32,7 @@
       news: viewNews,
     };
     view.innerHTML = (routes[name] || viewHome)();
-    const tab = { tea: 'teas', news: 'home' }[name] || name;
+    const tab = { tea: 'teas' }[name] || name;
     $$('.tabbar a').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
     const key = name + '/' + arg;
     if (key !== lastRoute) { window.scrollTo(0, 0); lastRoute = key; }
@@ -179,7 +179,7 @@
 
   function viewNews() {
     loadNews();
-    const head = `<button class="back" data-act="go" data-to="home">‹ ホーム</button><div class="page-head"><h1>紅茶のニュース</h1></div>`;
+    const head = '<div class="page-head"><h1>紅茶のニュース</h1></div>';
     if (newsState === 'loading' || newsState === 'idle') return head + '<p class="muted">読み込み中…</p>';
     if (newsState === 'error' || !news.items) {
       return head + empty('ニュースを読み込めませんでした', '<button class="btn" data-act="news-retry">再読み込み</button>');
