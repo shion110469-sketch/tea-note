@@ -130,8 +130,6 @@
           </div>
         </article>`).join('')}</div>
 
-      ${homeNews()}
-
       <h2 class="sec">最近の記録</h2>
       ${recent.length ? `<div class="stack">${recent.map(noteCard).join('')}</div>`
         : empty('飲んだ紅茶の感想を記録すると、好みに合わせた提案が届きます', '<button class="btn" data-act="new-note">最初の記録をつける</button>')}
@@ -149,7 +147,7 @@
       .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(d => { news = d; newsState = 'ok'; })
       .catch(() => { newsState = 'error'; })
-      .finally(() => { if (['home', 'news'].includes(parseHash().name)) render(); });
+      .finally(() => { if (parseHash().name === 'news') render(); });
   }
 
   function relTime(iso) {
@@ -167,17 +165,6 @@
         <p class="news-meta"><span>${esc(it.source || '')}</span><span>${relTime(it.publishedAt)}</span></p>
         <h3>${esc(it.title)}</h3>
       </a>`;
-  }
-
-  function homeNews() {
-    loadNews();
-    if (newsState !== 'ok' || !news.items || !news.items.length) return '';
-    return `
-      <div class="row between sec-row">
-        <h2 class="sec">紅茶のニュース</h2>
-        <button class="link-btn" data-act="go" data-to="news">すべて見る ›</button>
-      </div>
-      <div class="stack">${news.items.slice(0, 3).map(newsItem).join('')}</div>`;
   }
 
   function viewNews() {

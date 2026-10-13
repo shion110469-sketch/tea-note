@@ -15,7 +15,7 @@ MyTeaPal を参考にした、日本語の紅茶アプリ。リサーチ：[rese
 ### 紅茶のニュース
 - GitHub Actions（[.github/workflows/news.yml](.github/workflows/news.yml)）が6時間ごとに [scripts/fetch-news.ps1](scripts/fetch-news.ps1) を実行し、Google ニュースの RSS から「紅茶」「和紅茶」「アフタヌーンティー」の見出しを取得して `news.json` を更新する
 - キーワードごとに最大15件、合計40件、30日以内の記事。見出し・配信元・日時・リンクのみを保存し、本文は各配信元のサイトで読む
-- アプリはホームに最新3件、「ニュース」タブ（`#/news`）に一覧とキーワード別の絞り込みを表示
+- アプリの「ニュース」タブ（`#/news`）に一覧とキーワード別の絞り込みを表示
 - Google ニュースの RSS は「個人的・非商用の利用」に限られるため、個人利用の前提で使う
 - 手動で更新したいとき：GitHub の Actions タブ →「Update tea news」→「Run workflow」
 
