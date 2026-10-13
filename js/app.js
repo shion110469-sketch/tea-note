@@ -35,7 +35,7 @@
     const tab = { tea: 'teas' }[name] || name;
     $$('.tabbar a').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
     const key = name + '/' + arg;
-    if (key !== lastRoute) { window.scrollTo(0, 0); lastRoute = key; }
+    if (key !== lastRoute) { view.scrollTop = 0; lastRoute = key; }
     if (name === 'timer') updateTimerDisplay();
     updateMiniTimer();
   }
