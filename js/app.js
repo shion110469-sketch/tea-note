@@ -398,8 +398,17 @@
       ${teas.length ? `<div class="stack">${teas.map(teaCard).join('')}</div>`
         : empty('持っている茶葉を登録しましょう', '<button class="btn" data-act="new-tea">茶葉を登録</button>')}
       <details class="backup">
-        <summary>データのバックアップ</summary>
-        <p class="muted">データはこの端末のブラウザ内に保存されています。</p>
+        <summary>データのバックアップ（茶葉・在庫・記録）</summary>
+        <p>登録した<b>茶葉・在庫の量・テイスティング記録</b>を、まとめて1つのファイルに保存したり、そのファイルから元に戻したりできます。</p>
+        <p class="muted">現在のデータ：茶葉 ${Store.teas.length}種類・記録 ${Store.notes.length}件</p>
+        <div class="backup-why">
+          <b>なぜ必要？</b>
+          データはこのスマホのアプリの中だけに保存されています。ホーム画面のアイコンを削除したとき、ブラウザのデータを消去したとき、機種変更したときは消えてしまうため、ときどき書き出しておくと安心です。
+        </div>
+        <dl class="backup-how">
+          <dt>書き出す</dt><dd>今のデータをファイル（tea-note-日付.json）に保存します。iPhone は「ファイル」アプリなどに保存できます。</dd>
+          <dt>読み込む</dt><dd>書き出したファイルからデータを戻します。今のデータは置き換わります。</dd>
+        </dl>
         <div class="row gap">
           <button class="btn small ghost" data-act="export">書き出す</button>
           <label class="btn small ghost">読み込む<input type="file" accept="application/json" id="import-file" hidden></label>

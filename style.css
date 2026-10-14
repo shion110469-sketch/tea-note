@@ -317,9 +317,17 @@ input[type=date] { min-width: 0; max-width: 100%; display: block; -webkit-appear
 .slider .scale { grid-column: 2; display: flex; justify-content: space-between; font-size: 11px; }
 .slider .scale em { font-style: normal; }
 
-.backup { margin-top: 12px; font-size: 13px; color: var(--muted); }
-.backup summary { cursor: pointer; }
-.backup > * + * { margin-top: 8px; }
+.backup {
+  margin-top: 12px; padding: 12px 16px; border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--surface); font-size: 13px; color: var(--ink-2); line-height: 1.7;
+}
+.backup summary { cursor: pointer; font-weight: 700; color: var(--ink); }
+.backup > * + * { margin-top: 10px; }
+.backup-why { padding: 10px 12px; border-radius: var(--radius-sm); background: var(--warn-soft); color: var(--warn); }
+.backup-why b { display: block; }
+.backup-how { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; margin-bottom: 0; }
+.backup-how dt { font-weight: 700; color: var(--accent); white-space: nowrap; }
+.backup-how dd { margin: 0; }
 
 /* ---------- ニュース ---------- */
 .news-item { gap: 6px; }
