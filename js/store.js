@@ -29,7 +29,6 @@ const Store = (() => {
     get notes() { return state.notes; },
     tea: id => state.teas.find(t => t.id === id),
     note: id => state.notes.find(n => n.id === id),
-    findByBarcode: code => state.teas.find(t => t.barcode && t.barcode === code),
     notesFor: teaId => state.notes.filter(n => n.teaId === teaId),
 
     saveTea: t => upsert(state.teas, t),

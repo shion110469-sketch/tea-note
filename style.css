@@ -25,7 +25,6 @@
   --hero-1: #4A2213;
   --hero-2: #8E3A19;
   --hero-3: #C2692F;
-  --scan-bg: #1B120E;
   --shadow-sm: 0 1px 2px rgba(60, 35, 20, .06);
   --shadow: 0 1px 2px rgba(60, 35, 20, .05), 0 6px 18px rgba(60, 35, 20, .07);
   --shadow-lg: 0 10px 30px rgba(43, 30, 24, .22);
@@ -108,7 +107,7 @@ a { color: inherit; text-decoration: none; }
 
 .view {
   flex: 1; min-height: 0;
-  overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+  overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
   /* 中身は最大 528px 幅で中央寄せ（スマホでは左右 16px） */
   padding: 20px max(16px, calc((100% - 528px) / 2)) 88px;
   display: flex; flex-direction: column; gap: 14px;
@@ -305,8 +304,10 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); ou
 .rating { display: flex; gap: 4px; }
 .rating button { border: 0; background: none; font-size: 32px; line-height: 1; color: var(--line); cursor: pointer; padding: 0 2px; }
 .rating button.on { color: var(--gold); }
-.slider { display: grid; grid-template-columns: 48px 1fr; align-items: center; gap: 4px 12px; font-size: 13px; color: var(--muted); }
-.slider input { accent-color: var(--accent); width: 100%; }
+.slider { display: grid; grid-template-columns: 48px minmax(0, 1fr); align-items: center; gap: 4px 12px; font-size: 13px; color: var(--muted); }
+.slider input { accent-color: var(--accent); width: 100%; min-width: 0; margin: 0; }
+/* iPhone の日付入力は中身に合わせて横に広がり、画面からはみ出すことがある */
+input[type=date] { min-width: 0; max-width: 100%; display: block; -webkit-appearance: none; appearance: none; min-height: 44px; }
 .slider .scale { grid-column: 2; display: flex; justify-content: space-between; font-size: 11px; }
 .slider .scale em { font-style: normal; }
 
@@ -335,7 +336,8 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); ou
 .sheet-backdrop { position: fixed; inset: 0; z-index: 20; background: rgba(30, 18, 12, .5); animation: fade .2s ease-out; }
 .sheet {
   position: fixed; left: 50%; bottom: 0; transform: translateX(-50%); z-index: 21;
-  width: 100%; max-width: 560px; max-height: 90%; overflow-y: auto; overscroll-behavior: contain;
+  width: 100%; max-width: 560px; max-height: 90%; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain;
+  touch-action: pan-y; /* 縦スワイプだけで動かす（横にずれないようにする） */
   background: var(--bg); border-radius: 24px 24px 0 0; box-shadow: var(--shadow-lg);
   padding: 0 16px calc(24px + env(safe-area-inset-bottom));
   animation: up .25s cubic-bezier(.2, .8, .2, 1);
@@ -347,9 +349,6 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); ou
 .sheet-head h2 { font-family: var(--serif); font-size: 19px; }
 .sheet-body { display: flex; flex-direction: column; gap: 12px; }
 
-.scan-area { position: relative; width: 100%; aspect-ratio: 4 / 3; background: var(--scan-bg); border-radius: var(--radius); overflow: hidden; }
-.scan-area video { width: 100%; height: 100%; object-fit: cover; display: block; }
-.scan-frame { position: absolute; left: 12%; right: 12%; top: 34%; bottom: 34%; border: 2px solid rgba(255, 248, 242, .85); border-radius: 10px; pointer-events: none; }
 
 .toast {
   position: fixed; left: 50%; transform: translateX(-50%); z-index: 30;

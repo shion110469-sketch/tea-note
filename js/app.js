@@ -102,7 +102,7 @@
       </section>
       <div class="quick">
         <button data-act="go" data-to="timer"><span class="qi">${ICONS.timer}</span>タイマー</button>
-        <button data-act="scan"><span class="qi">${ICONS.scan}</span>バーコード登録</button>
+        <button data-act="new-tea"><span class="qi">${ICONS.leaf}</span>茶葉を登録</button>
         <button data-act="new-note"><span class="qi">${ICONS.note}</span>味を記録</button>
       </div>
       ${low.length ? `<div class="alert" data-act="go" data-to="teas"><b>在庫が少なくなっています</b><span>${low.map(t => esc(t.name)).join('、')}</span></div>` : ''}
@@ -372,14 +372,11 @@
     const lowCount = teas.filter(isLow).length;
     return `
       <div class="page-head"><h1>茶葉・在庫</h1>
-        <div class="row gap">
-          <button class="btn small ghost" data-act="scan">${ICONS.scan}スキャン</button>
-          <button class="btn small" data-act="new-tea">＋ 追加</button>
-        </div>
+        <button class="btn small" data-act="new-tea">＋ 追加</button>
       </div>
       <p class="muted">${teas.length}種類${lowCount ? `・残りわずか ${lowCount}件` : ''}</p>
       ${teas.length ? `<div class="stack">${teas.map(teaCard).join('')}</div>`
-        : empty('バーコードを読み取るか、手入力で茶葉を登録しましょう', '<button class="btn" data-act="scan">バーコードで登録</button>')}
+        : empty('持っている茶葉を登録しましょう', '<button class="btn" data-act="new-tea">茶葉を登録</button>')}
       <details class="backup">
         <summary>データのバックアップ</summary>
         <p class="muted">データはこの端末のブラウザ内に保存されています。</p>
@@ -430,7 +427,6 @@
       ${notes.length ? `<div class="stack">${notes.map(noteCard).join('')}</div>` : empty('この茶葉の記録はまだありません')}
       <button class="btn ghost wide" data-act="new-note" data-tea="${t.id}">この茶葉の味を記録</button>
 
-      ${t.barcode ? `<p class="muted center">バーコード：${esc(t.barcode)}</p>` : ''}
       ${t.memo ? `<p class="memo">${esc(t.memo)}</p>` : ''}
       <div class="row gap end">
         <button class="btn ghost danger" data-act="delete-tea" data-id="${t.id}">削除</button>
@@ -439,7 +435,7 @@
     `;
   }
 
-  function openTeaForm(tea = {}, opts = {}) {
+  function openTeaForm(tea = {}) {
     const isNew = !tea.id;
     const form0 = tea.form || 'leaf';
     const p = presetById(FORMS[form0].preset);
@@ -448,7 +444,6 @@
       <label class="field"><span>${label}</span><span class="pin"><input type="number" inputmode="decimal" min="0" step="${step}" name="${name}" value="${esc(val)}"><em>${unit}</em></span></label>`;
     openSheet(isNew ? '茶葉を登録' : '茶葉を編集', `
       <form id="tea-form" class="form">
-        <p class="muted" id="lookup-status" ${opts.lookup ? '' : 'hidden'}>商品情報を検索中…</p>
         <label class="field"><span>名前 *</span><input name="name" required value="${esc(t.name || '')}" placeholder="例：ダージリン セカンドフラッシュ"></label>
         <label class="field"><span>ブランド・お店</span><input name="brand" value="${esc(t.brand || '')}"></label>
         <div class="row gap">
@@ -472,9 +467,6 @@
             ${num('increment', '2煎目以降', t.brew.increment, '+秒', 10)}
           </div>
         </fieldset>
-        <label class="field"><span>バーコード</span>
-          <span class="row gap"><input name="barcode" inputmode="numeric" value="${esc(t.barcode || '')}" class="grow"><button type="button" class="btn small ghost" data-act="scan-into-form">${ICONS.scan}</button></span>
-        </label>
         <label class="field"><span>メモ</span><textarea name="memo" rows="2">${esc(t.memo || '')}</textarea></label>
         <div class="row gap end"><button class="btn">保存</button></div>
       </form>`);
@@ -506,66 +498,12 @@
           temp: Number(form.elements.temp.value), amount: Number(form.elements.amount.value), water: Number(form.elements.water.value),
           seconds: Number(form.elements.seconds.value), increment: Number(form.elements.increment.value),
         },
-        barcode: form.elements.barcode.value.trim(),
         memo: form.elements.memo.value.trim(),
         createdAt: tea.createdAt || Date.now(),
       });
       closeSheet();
       toast(isNew ? '登録しました' : '保存しました');
       go('tea/' + saved.id);
-      render();
-    });
-
-    if (opts.lookup && t.barcode) {
-      Scanner.lookup(t.barcode).then(info => {
-        const status = $('#lookup-status');
-        if (!status || !document.body.contains(form)) return;
-        if (info) {
-          if (!form.elements.name.value && info.name) form.elements.name.value = info.name;
-          if (!form.elements.brand.value && info.brand) form.elements.brand.value = info.brand;
-          status.textContent = '商品情報を入力しました。内容を確認してください。';
-        } else {
-          status.textContent = '商品情報が見つかりませんでした。名前を入力してください。';
-        }
-      });
-    }
-  }
-
-  // ---------- バーコード ----------
-  function openScanner(onCode) {
-    openSheet('バーコードを読み取る', `
-      <div id="scan-area" class="scan-area"><div class="scan-frame"></div></div>
-      <p class="muted center" id="scan-status">カメラを起動しています…</p>
-      <form id="manual-code" class="row gap">
-        <input name="code" inputmode="numeric" placeholder="番号を手入力（JANコード）" class="grow">
-        <button class="btn small">決定</button>
-      </form>`, () => Scanner.stop());
-    const done = code => { closeSheet(); onCode(code); };
-    Scanner.start($('#scan-area'), done, msg => { const el = $('#scan-status'); if (el) el.textContent = msg; });
-    $('#manual-code').addEventListener('submit', e => {
-      e.preventDefault();
-      const code = e.target.elements.code.value.trim();
-      if (code) done(code);
-    });
-  }
-
-  function handleBarcode(code) {
-    const tea = Store.findByBarcode(code);
-    if (!tea) { openTeaForm({ barcode: code }, { lookup: true }); return; }
-    openSheet('登録済みの茶葉です', `
-      <div class="card"><h3>${esc(tea.name)}</h3><p class="muted">現在の在庫：${stockText(tea)}</p></div>
-      <form id="restock" class="form">
-        <label class="field"><span>補充する量</span><span class="pin"><input type="number" name="add" min="0" step="0.5" inputmode="decimal" value="${tea.unit === '袋' ? 10 : 50}"><em>${esc(tea.unit)}</em></span></label>
-        <div class="row gap end">
-          <button type="button" class="btn ghost" data-act="go" data-to="tea/${tea.id}">詳細を見る</button>
-          <button class="btn">在庫に追加</button>
-        </div>
-      </form>`);
-    $('#restock').addEventListener('submit', e => {
-      e.preventDefault();
-      Store.adjustStock(tea.id, Number(e.target.elements.add.value || 0));
-      closeSheet();
-      toast('在庫を追加しました');
       render();
     });
   }
@@ -678,22 +616,6 @@
       $$('#rating button').forEach(b => b.classList.toggle('on', Number(b.dataset.v) <= v));
     },
     'toggle-chip': el => el.classList.toggle('on'),
-    'scan': () => openScanner(handleBarcode),
-    'scan-into-form': () => {
-      // 入力中のフォームを保ったまま読み取るため、読み取り後に値だけ戻す
-      const form = $('#tea-form');
-      const snapshot = Object.fromEntries(new FormData(form));
-      const tags = $$('.chip.on', form).map(b => b.dataset.v);
-      const base = Store.tea(form.dataset.teaId) || {};
-      openScanner(code => {
-        openTeaForm({
-          ...base,
-          name: snapshot.name, brand: snapshot.brand, type: snapshot.type, form: snapshot.form, unit: form.dataset.unit,
-          stock: snapshot.stock, lowAt: snapshot.lowAt, tags, memo: snapshot.memo, barcode: code,
-          brew: { temp: snapshot.temp, amount: snapshot.amount, water: snapshot.water, seconds: snapshot.seconds, increment: snapshot.increment },
-        }, { lookup: !snapshot.name });
-      });
-    },
     'sheet-close': () => closeSheet(),
     'news-filter': el => { newsFilter = el.dataset.q; render(); },
     'news-retry': () => { newsState = 'idle'; render(); },
