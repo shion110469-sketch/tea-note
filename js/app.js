@@ -14,16 +14,24 @@
   const isLow = t => Number(t.lowAt) > 0 && Number(t.stock) <= Number(t.lowAt);
   const RING = 2 * Math.PI * 110;
 
-  // 秒数を「分:秒」の選択肢にする（10秒刻み。今の値が刻みに合わなくても選択肢に含める）
-  function timeOptions(current, min, max, prefix = '') {
-    const cur = Number(current) || 0;
-    const values = [];
-    for (let v = min; v <= max; v += 10) values.push(v);
-    if (!values.includes(cur)) values.push(cur);
-    return values.sort((a, b) => a - b)
-      .map(v => `<option value="${v}" ${v === cur ? 'selected' : ''}>${prefix}${fmtTime(v * 1000)}</option>`).join('');
+  // 蒸らし時間の入力：「分」と「秒」を別々に選ぶ（1秒単位、最長 15:59）
+  // attrs: data-time-param（タイマーの設定名）か data-field（フォームの hidden 入力名）を付ける
+  const MAX_MIN = 15;
+  function mmssPicker(sec, attrs, disabled = false) {
+    const total = Math.max(1, Math.round(Number(sec) || 0));
+    const m = Math.min(MAX_MIN, Math.floor(total / 60)), s = total % 60;
+    const opts = (n, cur, pad) => Array.from({ length: n }, (_, i) =>
+      `<option value="${i}" ${i === cur ? 'selected' : ''}>${pad ? String(i).padStart(2, '0') : i}</option>`).join('');
+    const dis = disabled ? 'disabled' : '';
+    return `<span class="mmss" data-mmss ${attrs}>`
+      + `<select data-part="m" aria-label="分" ${dis}>${opts(MAX_MIN + 1, m)}</select><b>:</b>`
+      + `<select data-part="s" aria-label="秒" ${dis}>${opts(60, s, true)}</select></span>`;
   }
-  const STEEP_RANGE = [10, 900];   // 蒸らし：0:10〜15:00
+  const mmssValue = wrap => Math.max(1, Number($('[data-part=m]', wrap).value) * 60 + Number($('[data-part=s]', wrap).value));
+  function setMmss(wrap, sec) {
+    $('[data-part=m]', wrap).value = String(Math.min(MAX_MIN, Math.floor(sec / 60)));
+    $('[data-part=s]', wrap).value = String(sec % 60);
+  }
 
   const view = $('#view');
   let lastRoute = '';
@@ -219,10 +227,10 @@
       <label class="param"><span>${label}</span>
         <span class="pin"><input type="number" inputmode="decimal" step="${step}" min="0" data-param="${key}" value="${esc(c[key])}" ${s.running ? 'disabled' : ''}><em>${unit}</em></span>
       </label>`;
-    const timeParam = (key, label, [min, max], prefix = '') => `
-      <label class="param"><span>${label}</span>
-        <span class="pin"><select data-param="${key}" ${s.running ? 'disabled' : ''}>${timeOptions(c[key], min, max, prefix)}</select><em>分:秒</em></span>
-      </label>`;
+    const timeParam = (key, label) => `
+      <div class="param param-time"><span>${label}</span>
+        <span class="pin">${mmssPicker(c[key], `data-time-param="${key}"`, s.running)}<em>分:秒</em></span>
+      </div>`;
 
     return `
       <div class="page-head"><h1>タイマー</h1></div>
@@ -234,7 +242,7 @@
         ${param('temp', '温度', '℃')}
         ${param('amount', '茶葉', esc(c.unit), 0.5)}
         ${param('water', 'お湯', 'ml', 10)}
-        ${timeParam('seconds', '蒸らし', STEEP_RANGE)}
+        ${timeParam('seconds', '蒸らし')}
       </div>
 
       <div class="ring-wrap">
@@ -475,7 +483,8 @@
             ${num('temp', '温度', t.brew.temp, '℃')}
             ${num('amount', '茶葉', t.brew.amount, `<span class="unit-label">${esc(t.unit)}</span>`, 0.5)}
             ${num('water', 'お湯', t.brew.water, 'ml', 10)}
-            <label class="field"><span>蒸らし</span><span class="pin"><select name="seconds">${timeOptions(t.brew.seconds, ...STEEP_RANGE)}</select><em>分:秒</em></span></label>
+            <div class="field"><span>蒸らし</span><span class="pin">${mmssPicker(t.brew.seconds, 'data-field="seconds"')}<em>分:秒</em></span>
+              <input type="hidden" name="seconds" value="${esc(t.brew.seconds)}"></div>
           </div>
         </fieldset>
         <label class="field"><span>メモ</span><textarea name="memo" rows="2">${esc(t.memo || '')}</textarea></label>
@@ -486,6 +495,7 @@
     form.elements.form.addEventListener('change', () => {
       const np = presetById(FORMS[form.elements.form.value].preset);
       ['temp', 'amount', 'water', 'seconds'].forEach(k => { form.elements[k].value = np[k]; });
+      setMmss($('[data-field="seconds"]', form), np.seconds);
       $$('.unit-label', form).forEach(el => { el.textContent = np.unit; });
       form.dataset.unit = np.unit;
     });
@@ -664,6 +674,12 @@
       const [kind, id] = e.target.value.split(':');
       Timer.setup(kind === 'tea' ? cfgFromTea(Store.tea(id)) : cfgFromPreset(id));
       render();
+    } else if (e.target.dataset.part) {
+      // 分・秒の選択（タイマーの設定、または茶葉フォームの hidden 入力に反映）
+      const wrap = e.target.closest('[data-mmss]');
+      const sec = mmssValue(wrap);
+      if (wrap.dataset.timeParam) { Timer.update({ [wrap.dataset.timeParam]: sec }); render(); }
+      else if (wrap.dataset.field) wrap.closest('form').elements[wrap.dataset.field].value = sec;
     } else if (e.target.dataset.param) {
       Timer.update({ [e.target.dataset.param]: Number(e.target.value) || 0 });
       render();
