@@ -50,10 +50,15 @@
       tea: () => viewTeaDetail(arg), guide: () => (arg ? viewGuideDetail(arg) : viewGuides()),
       news: viewNews,
     };
+    const key = name + '/' + arg;
+    // 記録タブを開き直したら、カレンダーは今月・日付の選択なしに戻す
+    if (key !== lastRoute && name === 'notes') {
+      calDay = '';
+      calMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+    }
     view.innerHTML = (routes[name] || viewHome)();
     const tab = { tea: 'teas' }[name] || name;
     $$('.tabbar a').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
-    const key = name + '/' + arg;
     if (key !== lastRoute) { view.scrollTop = 0; lastRoute = key; }
     if (name === 'timer') updateTimerDisplay();
     updateMiniTimer();
@@ -303,18 +308,65 @@
   }
 
   // ---------- 記録 ----------
+  // カレンダーの表示中の月（1日）と、選んだ日（'YYYY-MM-DD'。未選択なら空）
+  let calMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+  let calDay = '';
+
+  function calendar() {
+    const y = calMonth.getFullYear(), m = calMonth.getMonth();
+    const counts = {};
+    let monthCount = 0;
+    Store.notes.forEach(n => {
+      const k = toDateInput(n.date);
+      counts[k] = (counts[k] || 0) + 1;
+      const d = new Date(n.date);
+      if (d.getFullYear() === y && d.getMonth() === m) monthCount++;
+    });
+    const today = toDateInput(Date.now());
+    const blanks = new Date(y, m, 1).getDay();
+    const days = new Date(y, m + 1, 0).getDate();
+    const cells = [];
+    for (let i = 0; i < blanks; i++) cells.push('<span></span>');
+    for (let d = 1; d <= days; d++) {
+      const key = toDateInput(new Date(y, m, d));
+      const n = counts[key] || 0;
+      const cls = ['cal-day', n ? 'has' : '', key === today ? 'today' : '', key === calDay ? 'sel' : ''].join(' ');
+      cells.push(`<button class="${cls}" data-act="cal-day" data-day="${key}" aria-label="${m + 1}月${d}日${n ? `、${n}件の記録` : ''}">
+        <span class="cal-num">${d}</span>${n ? `<span class="cal-mark">${n > 1 ? n : ''}</span>` : ''}</button>`);
+    }
+    return `
+      <div class="card cal">
+        <div class="cal-head">
+          <button class="cal-nav" data-act="cal-move" data-step="-1" aria-label="前の月">‹</button>
+          <div class="cal-title"><b>${y}年${m + 1}月</b><span>${monthCount ? `${monthCount}杯` : '記録なし'}</span></div>
+          <button class="cal-nav" data-act="cal-move" data-step="1" aria-label="次の月">›</button>
+        </div>
+        <div class="cal-grid cal-week">${'日月火水木金土'.split('').map(w => `<span>${w}</span>`).join('')}</div>
+        <div class="cal-grid">${cells.join('')}</div>
+      </div>`;
+  }
+
   function viewNotes() {
     const p = Recommend.profile();
     const liked = Recommend.likedTags(p, 4);
-    const notes = [...Store.notes].sort((a, b) => b.date - a.date);
+    const all = [...Store.notes].sort((a, b) => b.date - a.date);
+    const notes = calDay ? all.filter(n => toDateInput(n.date) === calDay) : all;
+    const [, dm, dd] = calDay.split('-').map(Number);
     return `
       <div class="page-head"><h1>テイスティング記録</h1><button class="btn small" data-act="new-note">＋ 記録</button></div>
+      ${calendar()}
       <div class="card profile">
         <h3>あなたの好み</h3>
         ${liked.length ? `<div class="chips">${chips(liked, 'accent')}</div><p class="muted">★4以上の記録から分析しています</p>`
           : '<p class="muted">★をつけた記録が増えると、好みの傾向を分析します</p>'}
       </div>
-      ${notes.length ? `<div class="stack">${notes.map(noteCard).join('')}</div>` : empty('まだ記録がありません')}
+      ${calDay ? `
+        <div class="row between sec-row">
+          <h2 class="sec">${dm}月${dd}日の記録</h2>
+          <button class="btn small ghost" data-act="cal-clear">すべて表示</button>
+        </div>` : '<h2 class="sec">すべての記録</h2>'}
+      ${notes.length ? `<div class="stack">${notes.map(noteCard).join('')}</div>`
+        : empty(calDay ? 'この日の記録はありません' : 'まだ記録がありません', calDay ? '<button class="btn" data-act="new-note">この日の記録をつける</button>' : '')}
     `;
   }
 
@@ -635,7 +687,18 @@
       render();
     },
     'stock-add': el => openRestock(el.dataset.id),
-    'new-note': el => openNoteForm(el.dataset.tea ? { teaId: el.dataset.tea } : {}),
+    'new-note': el => {
+      const init = el.dataset.tea ? { teaId: el.dataset.tea } : {};
+      // 記録タブでカレンダーの日付を選んでいるときは、その日付で記録する
+      if (parseHash().name === 'notes' && calDay) init.date = new Date(calDay + 'T12:00:00').getTime();
+      openNoteForm(init);
+    },
+    'cal-move': el => {
+      calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() + Number(el.dataset.step), 1);
+      render();
+    },
+    'cal-day': el => { calDay = calDay === el.dataset.day ? '' : el.dataset.day; render(); },
+    'cal-clear': () => { calDay = ''; render(); },
     'edit-note': el => openNoteForm(Store.note(el.dataset.id)),
     'delete-note': () => {
       const id = $('#note-form').dataset.id;
