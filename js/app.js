@@ -557,6 +557,7 @@
           <h3>${esc(g.title)}</h3>
           <p class="muted">${esc(g.lead)}</p>
         </article>`).join('')}</div>
+      <button class="btn ghost wide" data-act="show-onboarding">アプリの使い方をもう一度見る</button>
     `;
   }
 
@@ -638,6 +639,7 @@
     },
     'toggle-chip': el => el.classList.toggle('on'),
     'sheet-close': () => closeSheet(),
+    'show-onboarding': () => window.showOnboarding && window.showOnboarding(),
     'news-filter': el => { newsFilter = el.dataset.q; render(); },
     'news-retry': () => { newsState = 'idle'; render(); },
     'timer-start': () => Timer.start(),
