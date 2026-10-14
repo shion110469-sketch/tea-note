@@ -1,6 +1,6 @@
 // オフラインでも開けるように、アプリ本体をキャッシュする
 // ファイルを更新したら VERSION を上げると、利用者の端末に新しい版が届く
-const VERSION = 'v17';
+const VERSION = 'v18';
 const CACHE = `tea-note-${VERSION}`;
 const APP_SHELL = [
   './',
@@ -13,6 +13,7 @@ const APP_SHELL = [
   './js/icons.js',
   './js/data.js',
   './js/store.js',
+  './js/photos.js',
   './js/recommend.js',
   './js/timer.js',
   './js/app.js',

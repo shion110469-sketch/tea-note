@@ -13,6 +13,7 @@
   const guideById = id => GUIDES.find(g => g.id === id);
   const isLow = t => Number(t.lowAt) > 0 && Number(t.stock) <= Number(t.lowAt);
   const RING = 2 * Math.PI * 110;
+  const MAX_PHOTOS = 3; // 1つの記録に付けられる写真の数
 
   // 蒸らし時間の入力：「分」と「秒」を別々に選ぶ（1秒単位、最長 15:59）
   // attrs: data-time-param（タイマーの設定名）か data-field（フォームの hidden 入力名）を付ける
@@ -55,8 +56,10 @@
     if (key !== lastRoute && name === 'notes') {
       calDay = '';
       calMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+      noteQuery = '';
     }
     view.innerHTML = (routes[name] || viewHome)();
+    Photos.hydrate(view);
     const tab = { tea: 'teas' }[name] || name;
     $$('.tabbar a').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
     if (key !== lastRoute) { view.scrollTop = 0; lastRoute = key; }
@@ -94,16 +97,19 @@
       </article>`;
   }
 
+  const noteName = n => { const tea = n.teaId && Store.tea(n.teaId); return tea ? tea.name : n.teaName || ''; };
+
   function noteCard(n) {
-    const tea = n.teaId && Store.tea(n.teaId);
-    const name = tea ? tea.name : n.teaName || '（茶葉未設定）';
+    const photos = n.photos || [];
     return `
       <article class="card note-card" data-act="edit-note" data-id="${n.id}">
         <div class="row between">
-          <h3>${esc(name)}</h3>
+          <h3>${esc(noteName(n) || '（紅茶の名前なし）')}</h3>
           <span class="stars">${stars(n.rating)}</span>
         </div>
         <p class="muted">${fmtDate(n.date)}・${esc(n.style || 'ストレート')}</p>
+        ${photos.length ? `<div class="thumbs">${photos.map(id => `
+          <button type="button" class="thumb" data-act="view-photo" data-photo-id="${esc(id)}" aria-label="写真を大きく見る"><img data-photo="${esc(id)}" alt=""></button>`).join('')}</div>` : ''}
         ${n.tags && n.tags.length ? `<div class="chips">${chips(n.tags)}</div>` : ''}
         ${n.memo ? `<p class="memo">${esc(n.memo)}</p>` : ''}
       </article>`;
@@ -346,11 +352,36 @@
       </div>`;
   }
 
+  // 記録の検索・並べ替え
+  let noteQuery = '', noteSort = 'new';
+  const NOTE_SORTS = {
+    new: ['新しい順', (a, b) => b.date - a.date],
+    old: ['古い順', (a, b) => a.date - b.date],
+    high: ['★が高い順', (a, b) => b.rating - a.rating || b.date - a.date],
+    low: ['★が低い順', (a, b) => a.rating - b.rating || b.date - a.date],
+  };
+  // 全角／半角・カタカナ／ひらがなの違いを無視して比べる
+  const normalize = s => String(s || '').normalize('NFKC').toLowerCase()
+    .replace(/[ァ-ヶ]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60));
+
+  function noteListHTML() {
+    const words = normalize(noteQuery).split(/\s+/).filter(Boolean);
+    const notes = Store.notes
+      .filter(n => !calDay || toDateInput(n.date) === calDay)
+      .filter(n => {
+        if (!words.length) return true;
+        const text = normalize([noteName(n), n.memo, n.style, ...(n.tags || [])].join(' '));
+        return words.every(w => text.includes(w));
+      })
+      .sort(NOTE_SORTS[noteSort][1]);
+    if (notes.length) return `<p class="muted">${notes.length}件</p><div class="stack">${notes.map(noteCard).join('')}</div>`;
+    if (words.length) return empty('条件に合う記録はありません');
+    return empty(calDay ? 'この日の記録はありません' : 'まだ記録がありません', calDay ? '<button class="btn" data-act="new-note">この日の記録をつける</button>' : '');
+  }
+
   function viewNotes() {
     const p = Recommend.profile();
     const liked = Recommend.likedTags(p, 4);
-    const all = [...Store.notes].sort((a, b) => b.date - a.date);
-    const notes = calDay ? all.filter(n => toDateInput(n.date) === calDay) : all;
     const [, dm, dd] = calDay.split('-').map(Number);
     return `
       <div class="page-head"><h1>テイスティング記録</h1><button class="btn small" data-act="new-note">＋ 記録</button></div>
@@ -365,15 +396,44 @@
           <h2 class="sec">${dm}月${dd}日の記録</h2>
           <button class="btn small ghost" data-act="cal-clear">すべて表示</button>
         </div>` : '<h2 class="sec">すべての記録</h2>'}
-      ${notes.length ? `<div class="stack">${notes.map(noteCard).join('')}</div>`
-        : empty(calDay ? 'この日の記録はありません' : 'まだ記録がありません', calDay ? '<button class="btn" data-act="new-note">この日の記録をつける</button>' : '')}
+      ${Store.notes.length ? `
+        <div class="note-tools">
+          <input type="search" id="note-q" value="${esc(noteQuery)}" placeholder="名前・メモ・味で検索" aria-label="記録を検索">
+          <select id="note-sort" aria-label="並べ替え">${Object.entries(NOTE_SORTS).map(([k, [label]]) => `<option value="${k}" ${k === noteSort ? 'selected' : ''}>${label}</option>`).join('')}</select>
+        </div>` : ''}
+      <div id="note-list">${noteListHTML()}</div>
     `;
+  }
+
+  function refreshNoteList() {
+    const list = $('#note-list');
+    if (!list) return;
+    list.innerHTML = noteListHTML();
+    Photos.hydrate(list);
   }
 
   function openNoteForm(note = {}) {
     const isNew = !note.id;
     const n = { rating: 4, tags: [], style: 'ストレート', aroma: 3, astringency: 3, body: 3, date: Date.now(), ...note };
-    const teaOpts = Store.teas.map(t => `<option value="${t.id}" ${n.teaId === t.id ? 'selected' : ''}>${esc(t.name)}</option>`).join('');
+    const teas = Store.teas;
+    const linked = n.teaId && Store.tea(n.teaId);
+    const isOther = !linked && !!n.teaName;
+    // 在庫に茶葉があれば「在庫から選ぶ」、なければ名前の入力欄だけ
+    const teaField = teas.length ? `
+        <label class="field"><span>在庫から選ぶ</span>
+          <select name="teaId">
+            <option value="" disabled ${!linked && !isOther ? 'selected' : ''}>選んでください</option>
+            <optgroup label="在庫の茶葉">${teas.map(t => `<option value="${t.id}" ${linked && linked.id === t.id ? 'selected' : ''}>${esc(t.name)}（残り${stockText(t)}）</option>`).join('')}</optgroup>
+            <option value="__other" ${isOther ? 'selected' : ''}>在庫にない紅茶（名前を入力）</option>
+          </select>
+        </label>
+        <label class="field" id="tea-name-field" ${isOther ? '' : 'hidden'}><span>紅茶の名前</span>
+          <input name="teaName" value="${esc(n.teaName || '')}" placeholder="例：カフェで飲んだアッサム">
+        </label>` : `
+        <label class="field"><span>飲んだ紅茶</span>
+          <input name="teaName" value="${esc(n.teaName || '')}" placeholder="例：アッサム、カフェで飲んだ紅茶">
+          <span class="hint">在庫に茶葉がまだありません。「茶葉・在庫」タブで登録すると、ここから選べるようになります。</span>
+        </label>`;
     const slider = (key, label, lo, hi) => `
       <label class="slider"><span>${label}</span>
         <input type="range" min="1" max="5" step="1" name="${key}" value="${n[key]}">
@@ -381,14 +441,7 @@
       </label>`;
     openSheet(isNew ? '味を記録する' : '記録を編集', `
       <form id="note-form" class="form">
-        <label class="field"><span>茶葉</span>
-          <select name="teaId">
-            <option value="">その他（手入力）</option>${teaOpts}
-          </select>
-        </label>
-        <label class="field" id="tea-name-field" ${n.teaId ? 'hidden' : ''}><span>茶葉の名前</span>
-          <input name="teaName" value="${esc(n.teaName || '')}" placeholder="例：カフェで飲んだアッサム">
-        </label>
+        ${teaField}
         <div class="field"><span>評価</span>
           <div class="rating" id="rating">${[1, 2, 3, 4, 5].map(v => `<button type="button" data-act="rate" data-v="${v}" class="${v <= n.rating ? 'on' : ''}">★</button>`).join('')}</div>
           <input type="hidden" name="rating" value="${n.rating}">
@@ -406,6 +459,9 @@
         ${slider('astringency', '渋み', '弱い', '強い')}
         ${slider('body', 'コク', '軽い', '濃い')}
         <label class="field"><span>メモ</span><textarea name="memo" rows="3" placeholder="香り、合わせたお菓子など">${esc(n.memo || '')}</textarea></label>
+        <div class="field"><span>写真（${MAX_PHOTOS}枚まで）</span>
+          <div class="thumbs edit" id="note-photos"></div>
+        </div>
         <div class="row gap end">
           ${isNew ? '' : '<button type="button" class="btn ghost danger" data-act="delete-note">削除</button>'}
           <button class="btn">保存</button>
@@ -413,15 +469,70 @@
       </form>`);
 
     const form = $('#note-form');
-    form.elements.teaId.addEventListener('change', () => { $('#tea-name-field').hidden = !!form.elements.teaId.value; });
-    form.addEventListener('submit', e => {
+    const sel = form.elements.teaId;
+    if (sel) sel.addEventListener('change', () => { $('#tea-name-field').hidden = sel.value !== '__other'; });
+
+    // 写真：保存済み（kept）と、この画面で追加したもの（added）を分けて持ち、保存時に反映する
+    const kept = [...(n.photos || [])];
+    const added = []; // { id, blob, url }
+    const photoBox = $('#note-photos');
+    function renderPhotos() {
+      const total = kept.length + added.length;
+      photoBox.innerHTML = kept.map(id => `
+          <span class="thumb"><img data-photo="${esc(id)}" alt="記録の写真"><button type="button" class="thumb-del" data-kind="kept" data-id="${esc(id)}" aria-label="写真を外す">×</button></span>`).join('')
+        + added.map(p => `
+          <span class="thumb"><img src="${p.url}" alt="追加する写真"><button type="button" class="thumb-del" data-kind="added" data-id="${p.id}" aria-label="写真を外す">×</button></span>`).join('')
+        + (total < MAX_PHOTOS ? `
+          <label class="thumb thumb-add">${ICONS.camera}<span>追加</span><input type="file" accept="image/*" multiple hidden></label>` : '');
+      Photos.hydrate(photoBox);
+    }
+    photoBox.addEventListener('click', e => {
+      const del = e.target.closest('.thumb-del');
+      if (!del) return;
       e.preventDefault();
-      const teaId = form.elements.teaId.value || null;
-      if (!teaId && !form.elements.teaName.value.trim()) { toast('茶葉を選ぶか、名前を入力してください'); return; }
+      if (del.dataset.kind === 'kept') kept.splice(kept.indexOf(del.dataset.id), 1);
+      else {
+        const i = added.findIndex(p => p.id === del.dataset.id);
+        URL.revokeObjectURL(added[i].url);
+        added.splice(i, 1);
+      }
+      renderPhotos();
+    });
+    photoBox.addEventListener('change', async e => {
+      const files = [...(e.target.files || [])].slice(0, MAX_PHOTOS - kept.length - added.length);
+      for (const f of files) {
+        try {
+          const blob = await Photos.shrink(f);
+          added.push({ id: uid(), blob, url: URL.createObjectURL(blob) });
+        } catch (err) { toast(err.message); }
+      }
+      renderPhotos();
+    });
+    renderPhotos();
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const choice = sel ? sel.value : '';
+      const teaId = choice && choice !== '__other' ? choice : null;
+      const teaName = teaId ? '' : (form.elements.teaName ? form.elements.teaName.value.trim() : '');
+      if (!teaId && !teaName) {
+        toast(sel ? '在庫から選ぶか、「在庫にない紅茶」を選んで名前を入力してください' : '飲んだ紅茶の名前を入力してください');
+        return;
+      }
+      // 写真の保存と、外した写真の削除
+      let photos = [...kept];
+      try {
+        for (const p of added) { await Photos.put(p.id, p.blob); photos.push(p.id); }
+        for (const id of (n.photos || []).filter(id => !kept.includes(id))) await Photos.del(id);
+      } catch (err) {
+        toast('写真を保存できませんでした');
+        photos = [...kept];
+      }
       Store.saveNote({
         id: n.id || uid(),
         teaId,
-        teaName: teaId ? '' : form.elements.teaName.value.trim(),
+        teaName,
+        photos,
         rating: Number(form.elements.rating.value),
         style: form.elements.style.value,
         date: form.elements.date.value ? new Date(form.elements.date.value + 'T12:00:00').getTime() : Date.now(),
@@ -450,8 +561,8 @@
       ${teas.length ? `<div class="stack">${teas.map(teaCard).join('')}</div>`
         : empty('持っている茶葉を登録しましょう', '<button class="btn" data-act="new-tea">茶葉を登録</button>')}
       <details class="backup">
-        <summary>データのバックアップ（茶葉・在庫・記録）</summary>
-        <p>登録した<b>茶葉・在庫の量・テイスティング記録</b>を、まとめて1つのファイルに保存したり、そのファイルから元に戻したりできます。</p>
+        <summary>データのバックアップ（茶葉・在庫・記録・写真）</summary>
+        <p>登録した<b>茶葉・在庫の量・テイスティング記録（写真を含む）</b>を、まとめて1つのファイルに保存したり、そのファイルから元に戻したりできます。</p>
         <p class="muted">現在のデータ：茶葉 ${Store.teas.length}種類・記録 ${Store.notes.length}件</p>
         <div class="backup-why">
           <b>なぜ必要？</b>
@@ -702,7 +813,16 @@
     'edit-note': el => openNoteForm(Store.note(el.dataset.id)),
     'delete-note': () => {
       const id = $('#note-form').dataset.id;
-      if (id && confirm('この記録を削除しますか？')) { Store.deleteNote(id); closeSheet(); render(); toast('削除しました'); }
+      if (!id || !confirm('この記録を削除しますか？（写真も削除されます）')) return;
+      (Store.note(id).photos || []).forEach(p => Photos.del(p).catch(() => {}));
+      Store.deleteNote(id);
+      closeSheet();
+      render();
+      toast('削除しました');
+    },
+    'view-photo': el => {
+      openSheet('写真', `<img class="photo-full" data-photo="${esc(el.dataset.photoId)}" alt="記録の写真">`);
+      Photos.hydrate($('#sheet-root'));
     },
     'rate': el => {
       const v = Number(el.dataset.v);
@@ -724,8 +844,15 @@
       Timer.reset();
       openNoteForm({ teaId: c.teaId || null, teaName: c.teaId ? '' : c.label, style: c.style || 'ストレート' });
     },
-    'export': () => {
-      const blob = new Blob([Store.exportJSON()], { type: 'application/json' });
+    'export': async () => {
+      // 茶葉・記録に加えて、記録の写真もまとめて1つのファイルにする
+      const data = JSON.parse(Store.exportJSON());
+      try {
+        data.photos = await Photos.exportAll(Store.notes.flatMap(n => n.photos || []));
+      } catch (e) {
+        toast('写真を含めずに書き出しました');
+      }
+      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = `tea-note-${toDateInput(Date.now())}.json`;
@@ -758,11 +885,26 @@
       Timer.update({ [e.target.dataset.param]: Number(e.target.value) || 0 });
       render();
     } else if (e.target.id === 'import-file' && e.target.files[0]) {
-      e.target.files[0].text().then(text => {
+      e.target.files[0].text().then(async text => {
         if (!confirm('今のデータを読み込んだデータで置き換えます。よろしいですか？')) return;
-        try { Store.importJSON(text); toast('読み込みました'); render(); }
-        catch (err) { toast('読み込めませんでした：' + err.message); }
+        try {
+          Store.importJSON(text);
+          const { photos } = JSON.parse(text);
+          if (photos) await Photos.importAll(photos); // 写真を含まない古いファイルなら写真はそのまま
+          toast('読み込みました');
+          render();
+        } catch (err) { toast('読み込めませんでした：' + err.message); }
       });
+    } else if (e.target.id === 'note-sort') {
+      noteSort = e.target.value;
+      refreshNoteList();
+    }
+  });
+
+  document.addEventListener('input', e => {
+    if (e.target.id === 'note-q') {
+      noteQuery = e.target.value;
+      refreshNoteList();
     }
   });
 
