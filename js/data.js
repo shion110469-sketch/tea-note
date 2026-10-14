@@ -11,12 +11,12 @@ const FORMS = {
 };
 
 const BREW_PRESETS = [
-  { id: 'leaf', name: 'リーフ（大きめの茶葉）', temp: 100, amount: 3, unit: 'g', water: 150, seconds: 210, increment: 60 },
-  { id: 'broken', name: 'リーフ（細かい茶葉）', temp: 100, amount: 3, unit: 'g', water: 150, seconds: 150, increment: 60 },
-  { id: 'bag', name: 'ティーバッグ', temp: 100, amount: 1, unit: '袋', water: 150, seconds: 120, increment: 30 },
-  { id: 'milk', name: 'ミルクティー用（濃いめ）', temp: 100, amount: 5, unit: 'g', water: 150, seconds: 240, increment: 60, style: 'ミルク' },
-  { id: 'iced', name: 'アイスティー用（2倍の濃さ）', temp: 100, amount: 6, unit: 'g', water: 150, seconds: 180, increment: 60, style: 'アイス' },
-  { id: 'wakoucha', name: '和紅茶', temp: 95, amount: 3, unit: 'g', water: 150, seconds: 180, increment: 60 },
+  { id: 'leaf', name: 'リーフ（大きめの茶葉）', temp: 100, amount: 3, unit: 'g', water: 150, seconds: 210 },
+  { id: 'broken', name: 'リーフ（細かい茶葉）', temp: 100, amount: 3, unit: 'g', water: 150, seconds: 150 },
+  { id: 'bag', name: 'ティーバッグ', temp: 100, amount: 1, unit: '袋', water: 150, seconds: 120 },
+  { id: 'milk', name: 'ミルクティー用（濃いめ）', temp: 100, amount: 5, unit: 'g', water: 150, seconds: 240, style: 'ミルク' },
+  { id: 'iced', name: 'アイスティー用（2倍の濃さ）', temp: 100, amount: 6, unit: 'g', water: 150, seconds: 180, style: 'アイス' },
+  { id: 'wakoucha', name: '和紅茶', temp: 95, amount: 3, unit: 'g', water: 150, seconds: 180 },
 ];
 
 // 「次に試したい茶葉」の提案候補（銘柄ではなく茶葉の種類）

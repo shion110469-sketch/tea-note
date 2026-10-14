@@ -24,7 +24,6 @@
       .map(v => `<option value="${v}" ${v === cur ? 'selected' : ''}>${prefix}${fmtTime(v * 1000)}</option>`).join('');
   }
   const STEEP_RANGE = [10, 900];   // 蒸らし：0:10〜15:00
-  const EXTRA_RANGE = [0, 300];    // 2煎目以降の追加：+0:00〜+5:00
 
   const view = $('#view');
   let lastRoute = '';
@@ -202,11 +201,11 @@
   // ---------- タイマー ----------
   function cfgFromTea(t) {
     const b = t.brew || presetById(FORMS[t.form] ? FORMS[t.form].preset : 'leaf');
-    return { src: 'tea:' + t.id, teaId: t.id, label: t.name, unit: t.unit || 'g', temp: b.temp, amount: b.amount, water: b.water, seconds: b.seconds, increment: b.increment };
+    return { src: 'tea:' + t.id, teaId: t.id, label: t.name, unit: t.unit || 'g', temp: b.temp, amount: b.amount, water: b.water, seconds: b.seconds };
   }
   function cfgFromPreset(id, label) {
     const p = presetById(id) || BREW_PRESETS[0];
-    return { src: 'preset:' + p.id, teaId: null, label: label || p.name, unit: p.unit, temp: p.temp, amount: p.amount, water: p.water, seconds: p.seconds, increment: p.increment, style: p.style };
+    return { src: 'preset:' + p.id, teaId: null, label: label || p.name, unit: p.unit, temp: p.temp, amount: p.amount, water: p.water, seconds: p.seconds, style: p.style };
   }
 
   function viewTimer() {
@@ -231,13 +230,11 @@
         <span>茶葉・淹れ方</span>
         <select id="timer-src" ${s.running ? 'disabled' : ''}>${opts}</select>
       </label>
-      ${c.src.startsWith('preset:') && c.label !== (presetById(c.src.slice(7)) || {}).name ? `<p class="muted center">${esc(c.label)}</p>` : ''}
       <div class="params">
         ${param('temp', '温度', '℃')}
         ${param('amount', '茶葉', esc(c.unit), 0.5)}
         ${param('water', 'お湯', 'ml', 10)}
         ${timeParam('seconds', '蒸らし', STEEP_RANGE)}
-        ${timeParam('increment', '2煎目以降', EXTRA_RANGE, '+')}
       </div>
 
       <div class="ring-wrap">
@@ -247,11 +244,7 @@
           <circle cx="120" cy="120" r="110" class="ring-fg" id="ring-fg" stroke-dasharray="${RING}" stroke-dashoffset="0"/>
         </svg>
         <div class="ring-center">
-          <div class="steep-step">
-            <button class="steep-btn" data-act="timer-prev" aria-label="前の煎に戻す" ${s.steep <= 1 || s.running ? 'disabled' : ''}>‹</button>
-            <p class="steep">${s.steep}煎目</p>
-            <button class="steep-btn" data-act="timer-next" aria-label="次の煎へ" ${s.running ? 'disabled' : ''}>›</button>
-          </div>
+          <p class="ring-label">${esc(c.label)}</p>
           <p class="digits" id="timer-digits">0:00</p>
           <p class="muted">${esc(c.temp)}℃・${esc(c.amount)}${esc(c.unit)}・${esc(c.water)}ml</p>
         </div>
@@ -262,7 +255,6 @@
         ${s.running
           ? '<button class="btn big" data-act="timer-pause">一時停止</button>'
           : `<button class="btn big" data-act="timer-start" ${s.done ? 'disabled' : ''}>${s.remaining != null && !s.done ? '再開' : 'スタート'}</button>`}
-        <button class="btn ghost" data-act="timer-next">次の煎へ</button>
       </div>
 
       ${s.done ? `
@@ -459,7 +451,7 @@
     const isNew = !tea.id;
     const form0 = tea.form || 'leaf';
     const p = presetById(FORMS[form0].preset);
-    const t = { type: 'その他', form: form0, unit: p.unit, stock: '', lowAt: '', tags: [], brew: { temp: p.temp, amount: p.amount, water: p.water, seconds: p.seconds, increment: p.increment }, ...tea };
+    const t = { type: 'その他', form: form0, unit: p.unit, stock: '', lowAt: '', tags: [], brew: { temp: p.temp, amount: p.amount, water: p.water, seconds: p.seconds }, ...tea };
     const num = (name, label, val, unit, step = 1) => `
       <label class="field"><span>${label}</span><span class="pin"><input type="number" inputmode="decimal" min="0" step="${step}" name="${name}" value="${esc(val)}"><em>${unit}</em></span></label>`;
     openSheet(isNew ? '茶葉を登録' : '茶葉を編集', `
@@ -484,7 +476,6 @@
             ${num('amount', '茶葉', t.brew.amount, `<span class="unit-label">${esc(t.unit)}</span>`, 0.5)}
             ${num('water', 'お湯', t.brew.water, 'ml', 10)}
             <label class="field"><span>蒸らし</span><span class="pin"><select name="seconds">${timeOptions(t.brew.seconds, ...STEEP_RANGE)}</select><em>分:秒</em></span></label>
-            <label class="field"><span>2煎目以降</span><span class="pin"><select name="increment">${timeOptions(t.brew.increment, ...EXTRA_RANGE, '+')}</select><em>分:秒</em></span></label>
           </div>
         </fieldset>
         <label class="field"><span>メモ</span><textarea name="memo" rows="2">${esc(t.memo || '')}</textarea></label>
@@ -494,7 +485,7 @@
     const form = $('#tea-form');
     form.elements.form.addEventListener('change', () => {
       const np = presetById(FORMS[form.elements.form.value].preset);
-      ['temp', 'amount', 'water', 'seconds', 'increment'].forEach(k => { form.elements[k].value = np[k]; });
+      ['temp', 'amount', 'water', 'seconds'].forEach(k => { form.elements[k].value = np[k]; });
       $$('.unit-label', form).forEach(el => { el.textContent = np.unit; });
       form.dataset.unit = np.unit;
     });
@@ -516,7 +507,7 @@
         tags: $$('.chip.on', form).map(b => b.dataset.v),
         brew: {
           temp: Number(form.elements.temp.value), amount: Number(form.elements.amount.value), water: Number(form.elements.water.value),
-          seconds: Number(form.elements.seconds.value), increment: Number(form.elements.increment.value),
+          seconds: Number(form.elements.seconds.value),
         },
         memo: form.elements.memo.value.trim(),
         createdAt: tea.createdAt || Date.now(),
@@ -642,8 +633,6 @@
     'timer-start': () => Timer.start(),
     'timer-pause': () => Timer.pause(),
     'timer-reset': () => Timer.reset(),
-    'timer-next': () => { applyConsume(); Timer.next(); },
-    'timer-prev': () => Timer.prev(),
     'done-close': () => { applyConsume(); Timer.reset(); },
     'done-note': () => {
       applyConsume();
