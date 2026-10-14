@@ -32,7 +32,8 @@ MyTeaPal を参考にした、日本語の紅茶アプリ。リサーチ：[rese
    - Android（Chrome）：メニュー →「ホーム画面に追加」または「アプリをインストール」
 3. 以降はアイコンから起動。一度開けばオフラインでも動く
 
-更新を配信するときは、ファイルを変更して `sw.js` の `VERSION` を上げ、GitHub に push する。
+更新を配信するときは、ファイルを変更して `sw.js` の `VERSION` を上げ、GitHub に push する（GitHub Actions がニュースを自動で push するので、先に `git pull --rebase`）。
+スマホのアプリは、次に開いたとき（バックグラウンドから戻ったときも）に新しい版へ自動で切り替わる（`js/update.js`。タイマー作動中や入力中は「更新」ボタンを表示）。
 
 ## 起動方法（PCで開発するとき）
 ```
@@ -55,6 +56,7 @@ powershell -ExecutionPolicy Bypass -File serve.ps1
 | `js/timer.js` | 抽出タイマー |
 | `js/app.js` | 画面の描画と操作 |
 | `js/intro.js` | オンボーディングとスプラッシュ |
+| `js/update.js` | オフライン対応の登録と、新しい版への自動切り替え |
 
 ## 今後の課題
 - デザインの作り込み

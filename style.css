@@ -363,6 +363,17 @@ input[type=date] { min-width: 0; max-width: 100%; display: block; -webkit-appear
   animation: fade .2s ease-out;
 }
 
+/* ---------- 新しいバージョンのお知らせ ---------- */
+.update-bar {
+  position: fixed; left: 50%; transform: translateX(-50%); z-index: 40;
+  top: calc(60px + env(safe-area-inset-top));
+  display: flex; align-items: center; gap: 12px;
+  width: max-content; max-width: calc(100% - 32px); padding: 8px 8px 8px 16px;
+  border-radius: 999px; background: var(--ink); color: var(--bg); font-size: 13px;
+  box-shadow: var(--shadow-lg); animation: fade .2s ease-out;
+}
+.update-bar button { border: 0; border-radius: 999px; padding: 6px 14px; background: var(--accent); color: var(--accent-ink); font-weight: 700; cursor: pointer; }
+
 /* ---------- スプラッシュ ---------- */
 .splash {
   position: fixed; inset: 0; z-index: 100;

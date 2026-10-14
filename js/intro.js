@@ -132,9 +132,15 @@
     setTimeout(() => splash.remove(), 500);
   }
 
+  // 新しい版への自動切り替えで読み込み直したとき（js/update.js）はスプラッシュを出さない
+  let updated = false;
+  try { updated = sessionStorage.getItem('teanote.updated') === '1'; sessionStorage.removeItem('teanote.updated'); } catch (e) { /* 読めなければ通常どおり */ }
+
   if (isFirstLaunch()) {
     if (splash) splash.remove();
     showOnboarding();
+  } else if (updated) {
+    if (splash) splash.remove();
   } else {
     setTimeout(hideSplash, 1100);
   }
