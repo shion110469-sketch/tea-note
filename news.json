@@ -1,26 +1,68 @@
 {
-  "updatedAt": "2026-10-14T12:22:55Z",
+  "updatedAt": "2026-10-14T18:22:14Z",
   "source": "Google News",
   "items": [
+    {
+      "title": "福岡発のアイスクリームプロデュース企業「SCREAM」、アニエスベーの新たな旗艦店「アニエスベー",
+      "source": "ニコニコニュース",
+      "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTFBTT3Y4OUIzZWFrb29mQko5UzIzQ21Ca3dIZlJpSVFPS09ibmU1U3J6c0hxc21rOHRyUGRrZ2NCazB4dmZaMzVwUUdzMzVuaXVhMEhjbjJwdm9nMk91eXBMRHE0VE9IeHNQXzdLTnZieVU3NVJlMS1jRy1XYw?oc=5",
+      "publishedAt": "2026-10-14T15:51:26Z",
+      "query": "紅茶"
+    },
+    {
+      "title": "【阪急うめだ本店】初の秋開催！年に一度のお茶の祭典「ワールド・ティー・フェスティバル 2026」10月28日(水)より開幕",
+      "source": "ニコニコニュース",
+      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE1GblpTTHZpaElrbmwzM3VOamxmZUk4NzN5VkRoWnZKMVFoQlpQZ1VrODdVUkdpTTJvTDR6ZVBCa29LXzE5VVllVGJ0cTZSSnp5TElkcktPODdLV3hZdVhpV0tSMU1Vc1V5?oc=5",
+      "publishedAt": "2026-10-14T15:45:12Z",
+      "query": "紅茶"
+    },
+    {
+      "title": "「ちいかわベーカリー」2周年イベント開催！コロネになったちいかわたちのマスコットはじめ、アパレルや紅茶缶など限定アイテムが続々（インサイド）",
+      "source": "Yahoo!ニュース",
+      "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE9Xckd6UklPaEFhUHhQcEJFcTk4U2lXTFg0QTJvc1NiSnVVcjhJVWVYR0l1TjNqZlpMQ1JkZl92eHZvS3JlZnZSaW5SaUt1NlQyTUlPSDFMV2ZvOFhKMXVfdWk1TDdWZXNHQXNCRER0a2FkRHZOc1I2YndDRVpDYjQ?oc=5",
+      "publishedAt": "2026-10-14T15:29:36Z",
+      "query": "紅茶"
+    },
+    {
+      "title": "「ちいかわベーカリー」2周年イベント開催！コロネになったちいかわたちのマスコットはじめ、アパレルや紅茶缶など限定アイテムが続々",
+      "source": "インサイド",
+      "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE5wbFB4bFFTZXZvSE9PUklUYVdZN0VYMWdrWWRaUWk0eFRQUDFwY2VOWmtxelRuXzR3Tzg0NnAxYlNKY1hFazltU0tKTlNDZkl2Yzh5LVpDNjh2MnMyUTBPV3BvWkloV1Yxenc?oc=5",
+      "publishedAt": "2026-10-14T15:10:03Z",
+      "query": "紅茶"
+    },
+    {
+      "title": "あいちウィークに合わせTIADが親子アフタヌーンティーを2026年11月24日開催へ",
+      "source": "Dellows News",
+      "url": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE9NcXVzbEJLX0dwdlVERFJydTZmZmpyR0JBMzUwMGNYeEVsZkpnVFhfcXh4VG96S2o1TUZ1anVBbTdmYXBmNmhCcVlmMnVjVXg5dHRzU1RBWC1sNlJNOC1Rc3NhQTA?oc=5",
+      "publishedAt": "2026-10-14T15:01:18Z",
+      "query": "アフタヌーンティー"
+    },
+    {
+      "title": "【大聖堂ビューが圧巻】祇園辻利の抹茶×和栗！名古屋ホテルのお月見アフタヌーンティー（くろにゃん） - エキスパート",
+      "source": "Yahoo!ニュース",
+      "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxOUHVBQW1DTXRxVDh3Y01YUElqXzgxZjJES0ZRV3d1ZnVqMzByWjRPTklub1FzalBSbk16RVN3ZlpCVW1uUVUwaF91Mjc3ZXB4amRNWExPTHEyVEF6blRDNjdiSFZIaVRBa3pzRWYxMWFLTjY4OGVVTHZ0NjBTTmNoM09sWFE2SU03?oc=5",
+      "publishedAt": "2026-10-14T14:44:29Z",
+      "query": "アフタヌーンティー"
+    },
+    {
+      "title": "【秋のご褒美】シャインマスカット尽くし！大阪マリオット都ホテルのアフタヌーンティー（くろにゃん） - エキスパート",
+      "source": "Yahoo!ニュース",
+      "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxOTGszc3VHaWZTcmlsMWtYaUVfRHUwZ0Q4UkFIOGNlZU4zR2szZjA2TnlDcXRzLXh1SUt5QlI2VUpnOGN3ZDRUcGZiZTFCcGdRSnhYLXMxV3JfdnhhR3UySjhyWWZLY1V0anJ6N2pNZFVuVjN6OHJrdzNTVWhFdjZoZGtIcE9xaHlt?oc=5",
+      "publishedAt": "2026-10-14T12:43:39Z",
+      "query": "アフタヌーンティー"
+    },
+    {
+      "title": "【yuraRi】#40 秋って、おいしい！🍁 本物の紅葉入り紅茶×林檎のお菓子×紫のラベンダーチーズ!?",
+      "source": "YouTube",
+      "url": "https://news.google.com/rss/articles/CBMiQkFVX3lxTE13V2V3YnA0Y3lQSzJmRnNuSEc4YzhWcmNhbGsxZXJZc0U0cTZlZkp4SGhNN3dhdXFCS1BGd1FBbU01Zw?oc=5",
+      "publishedAt": "2026-10-14T10:15:00Z",
+      "query": "紅茶"
+    },
     {
       "title": "リーガロイヤルホテル広島“海の生き物”アフタヌーンティー、クラゲ型ムース＆ひょっこりチンアナゴ菓子",
       "source": "千葉テレビ放送株式会社",
       "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE5xWnJhdHk4bXpKeDhCMkl5d0otUk41WmkzNXZmekF4djdxazVjcFNOZWJTZ2k0bDNqN1hYNk80UmRGYUVaMUZ0dDVtZXFuWUhkUkRKZ3pJWnEwTF9EN1lN?oc=5",
       "publishedAt": "2026-10-14T09:23:24Z",
-      "query": "アフタヌーンティー"
-    },
-    {
-      "title": "【阪急うめだ本店】初の秋開催！年に一度のお茶の祭典「ワールド・ティー・フェスティバル 2026」10月28日(水)より開幕",
-      "source": "福島民報デジタル",
-      "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE83NFRRV2RLMGpiRWFoMl9DaVVpNmhVN3VzQ1pub2VOYmZGdkM1VUdqQ0puVlhKUXRRdmF3OVFrRzM2UV93em9LM1BEd3c2b2Y4S2dpRTF5VzVRM05TSTNHT0h3WGpOVlU?oc=5",
-      "publishedAt": "2026-10-14T09:19:40Z",
-      "query": "紅茶"
-    },
-    {
-      "title": "【大阪マリオット都ホテル】絶景を望むクリスマス限定コース料理からアフタヌーンティー、夜を彩るバープランまで。フルライン",
-      "source": "ニコニコニュース",
-      "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTFBfYzc3a1RrOTBTX2M5MktFTDFTSmRzR2JsSVAwMUU0QWF4N2k4SzJQRkZBYUJJT1pkYXVXa2VyZ0pDOUNjWjhJSXd5bU1IYU44Z0hkV1ZBcVRwXzhNNzdjTGhxMkZuTWtG?oc=5",
-      "publishedAt": "2026-10-14T09:15:15Z",
       "query": "アフタヌーンティー"
     },
     {
@@ -59,17 +101,24 @@
       "query": "アフタヌーンティー"
     },
     {
-      "title": "福岡発のアイスクリームプロデュース企業「SCREAM」、アニエスベーの新たな旗艦店「アニエスベー 松屋銀座店」限定フレーバーを開発",
-      "source": "繊研新聞",
-      "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxNVDVtZktMazQ2TWxpa3JIbjhEZ3JWUEJSd3U4angycEFHdy1GUnpVMDREWDk4TmxBUm53aEhScmNZSFd6eUd1YWtYejZPTEowQ0RfV2hyRkJPVUV2eEpQSkVHTGczVzVIaHhFdXZXV0tFVHhxY2dSQ0Y1UUpGNy1GQnhsNzByVFhBeXZXZGt5TUI0anpxSUhMY0RsTjhlYlhWYVdkZkNyMjVmR3VORmc?oc=5",
-      "publishedAt": "2026-10-14T07:40:19Z",
-      "query": "和紅茶"
+      "title": "「パネトーネ」をアレンジしたいちごのドルチェを楽しむ「クリスマス アフタヌーンティー」が登場",
+      "source": "MANTANWEB",
+      "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE9oc1RzSnpCN3RtZ3ZpbmNlMmlMNmZDOTg0X2FnRTVBVFM4c2pZcVFrd3dTUE43R25odS1DQVR3ZjRBQnJUMEhobUE4bGw4ZExYNTJQSGV4QjdUcXZSdzRvcWhTa2F0anFpYTV3QWVKV1pkTFZNZnc?oc=5",
+      "publishedAt": "2026-10-14T07:43:15Z",
+      "query": "アフタヌーンティー"
     },
     {
       "title": "ロイヤルパークホテルの中国料理アフタヌーンティー、サンタ帽のパンダ饅頭などクリスマス仕様に",
       "source": "千葉テレビ放送株式会社",
       "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE5URVlSLUVjNTRGOEhvRUVEUnhyclFsX3Zuc0lQSVpRVlFvTWJYYm1IbkN1bDF4ZHBXbVF1dnNPNTdhdWxCa1pmc0tVNXB5MTNiVG1lTVlKS0pBblhJc1VR?oc=5",
       "publishedAt": "2026-10-14T07:23:20Z",
+      "query": "アフタヌーンティー"
+    },
+    {
+      "title": "四季をめぐる企画「クラフトマン×KŌSA アフタヌーンティー」 第二弾は京都・綾部「竹炭工房 三代目伝徳」炭で温かみを感じる、冬限定アフタヌーンティー 12月1日（火）提供開始",
+      "source": "毎日キレイ",
+      "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTFA0MWhlNGR4dExkUEJZVGlKaXp4TmcwZVd4U2VZUWpGTlRiUGliZGhpVlQxU2Fyc2VvNVdkN2hBQ0lWTjZ3dXNRWnVoRVh6dTY4UjAxYmwwSGtOMlhabmRQM3FaTkVnY1NFdXBNb2lDdVk0elpvQlpIWmhR?oc=5",
+      "publishedAt": "2026-10-14T06:50:40Z",
       "query": "アフタヌーンティー"
     },
     {
@@ -87,17 +136,17 @@
       "query": "紅茶"
     },
     {
+      "title": "デリス・ド・ショコラ アフタヌーンティーセット 上段",
+      "source": "なんば経済新聞",
+      "url": "https://news.google.com/rss/articles/CBMiVEFVX3lxTE4tRklzR19YSG8zdE45WmtDSlFIdkZjamtUZ0ZQc29NQVJYai03WGFFdVdOWE9wTzZ5NU1LNUxBMnMwbDRvMElBWDNtRmtHel95Zm5EeQ?oc=5",
+      "publishedAt": "2026-10-14T05:46:28Z",
+      "query": "アフタヌーンティー"
+    },
+    {
       "title": "心斎橋のホテルに「チョコ尽くし」アフタヌーンティー ドバイチョコも（みんなの経済新聞ネットワーク）",
       "source": "Yahoo!ニュース",
       "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTFBaNFRuZDJUUFhlb0RYSU90WDlrOVI3VE5KeklxU0lPTk9kVnBMcGphOERjMjFOVW55czdpS3VoQm4xdzZHTmZvY1BvVngwX0R1UHpHbW55ZlY0dm5QZ0xJVDFabmlvaWJVM1ZoeHFhQl83bnZVY01DWnVnUlNuRkU?oc=5",
       "publishedAt": "2026-10-14T05:41:57Z",
-      "query": "アフタヌーンティー"
-    },
-    {
-      "title": "「親子アフタヌーンティー」11月24日 ～あいちウィーク期間中に親子参加イベントを開催～",
-      "source": "MANTANWEB",
-      "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE1FSGd2U0h1WUxGOVlSajRmU3pQYW5GWGtWV08wQl9YR0hoazVwbEhwUkVPVGctX0l5amY3eFp4Yzd2Um9uVjNYVHdRSF81b0NpZTdFeWhWVFlobElMdlhHX1RZOXJSOU5mRmplM1pMci0wdVBERnc?oc=5",
-      "publishedAt": "2026-10-14T05:32:10Z",
       "query": "アフタヌーンティー"
     },
     {
@@ -108,13 +157,6 @@
       "query": "アフタヌーンティー"
     },
     {
-      "title": "【ロイヤルパークホテル】クリスマスの”カワイイ”がテーマ！キュートな「クリスマスアフタヌーンティー」が12/1～登場！",
-      "source": "クレアウェブ",
-      "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE9jeEZsMGlVUTJoTVplTHZYWGdRc05HS1pnT0xmVXAwdHU1RmF4c3did005YzhsTmpsaVRDVWRjSzVXTHRMMkZMV2lXQktZVVJEMFA1RVRyN3VWVkVMRzFZTkdyVFlScDZ3azNsUlh3aXQwdw?oc=5",
-      "publishedAt": "2026-10-14T05:11:18Z",
-      "query": "アフタヌーンティー"
-    },
-    {
       "title": "【こだわりの逸品を全国展開 特産品ＥＣ】第５５２回 緑茶・和紅茶専門ＥＣサイト アワード受賞、パッケージ変更とＳＮＳ注力で売上増（2026年10月1日号）",
       "source": "日流ウェブ",
       "url": "https://news.google.com/rss/articles/CBMiVkFVX3lxTE9mN05SZTgxTnNDWDR3X19ja2oydWd4bHh3Tng3WDFqVzZvZ01rbnY3UVp5cnY4OWtuTEFrZ2M2a25WNWVuelFRTHJyZDlPUXV4Wm0zQUVR?oc=5",
@@ -122,17 +164,10 @@
       "query": "紅茶"
     },
     {
-      "title": "「パネトーネ」をアレンジしたいちごのドルチェを楽しむ「クリスマス アフタヌーンティー」が登場",
-      "source": "PR TIMES",
-      "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTFBQUXVHdzViOFJId3U5a01RTjlRSDhpOXJDMjlrN1hhV2F1ZGVWMDhOUFR5NUZpNm01S004anhaX1lIQ0NpbS1mMGV0aWs2N0hqMGhVTXhMVXp1RnlnWm1rTHV0RGpmMFdGMVE?oc=5",
-      "publishedAt": "2026-10-14T05:00:02Z",
-      "query": "アフタヌーンティー"
-    },
-    {
-      "title": "紅茶 (@tea_dr37) on X",
-      "source": "Howl.link",
-      "url": "https://news.google.com/rss/articles/CBMiO0FVX3lxTE5SWU9XeDJPS3JmMEpVT19PZkdHMk9xRjNnOWU1RTRoemNuTnJtVVE0cnk4WkxMaThlZ0hB?oc=5",
-      "publishedAt": "2026-10-14T04:49:44Z",
+      "title": "NY発プレミアムティーブランド「HARNEY & SONS」、阪急うめだ本店で開催の「ワールド・ティー・フェスティバル",
+      "source": "ニコニコニュース",
+      "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTFBMNHFTSkZ6cjA4RFIwSElxRE1CZ3I0VlJ6V1RtNHVNQ3k3SlFZSHp6eWtHR2pFUktJWldZYnBQUjhRdUJ0b29xVnRPNml3R2pGTHItRUUxXy1FN0hwd2VBVUl0MHZLVVFCaEhwa2w5T3VxdDk3M0V5SUpUcw?oc=5",
+      "publishedAt": "2026-10-14T04:30:28Z",
       "query": "紅茶"
     },
     {
@@ -150,20 +185,6 @@
       "query": "アフタヌーンティー"
     },
     {
-      "title": "【全国4都市で期間限定開催】雪の世界とオーガニックローズが彩る、冬限定の華やかなティータイム「ベストブライダルスノーホリデー×ジュリーク ローズアフタヌーンティー」を開催",
-      "source": "PR TIMES",
-      "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE02WUpGdnhETEhPZE4zVWtXTDAyTnNjMElWaVZNTHVibnF6UXN0ZndiNEctVFItbUp5Zll3V2pDSlpIRUVRYktSTjZZYTNrRExjeWJCT3pHUW1qMGxDWkxscDc2M19NUVkxN0E?oc=5",
-      "publishedAt": "2026-10-14T03:00:02Z",
-      "query": "アフタヌーンティー"
-    },
-    {
-      "title": "【大津市】子どもと優雅なティータイムを！瀬田の人気カフェ「フルレットドゥース」で「お子様アフタヌーンティーセット」が新登場！お得な親子セット割も♪",
-      "source": "千葉テレビ放送株式会社",
-      "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE5GelQ3aUNLUkxkTll2cVJCazJqcWJWVDNmMG5EamFNLS1wRXNrcnhaOWJBOC0zZFR6QTREaGtSU2JuLTc2ampHZ1p6T2JBZHFQb1pkWVg0X3dKVXpCeGxz?oc=5",
-      "publishedAt": "2026-10-14T02:30:50Z",
-      "query": "アフタヌーンティー"
-    },
-    {
       "title": "ふたも持ち手も食べられるティーポットケーキ大阪 中崎町で10月10日販売開始",
       "source": "Infoseek",
       "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE8zd2R6cndlaFptd2JDVnhpVG8wQXB5Z3RwYjBuRU5zdWVrRmoxMlFQckdIQ0dmNjFkeUZCV2lzY0RnbjVZZmtWTWFnV1RvNnpEc3djYWFZUGJTZEZhalpmYjQ2bmpVSXlBQ1Ywc0lMNHpsUQ?oc=5",
@@ -171,16 +192,16 @@
       "query": "紅茶"
     },
     {
-      "title": "宝物の美しい柄をあしらった「天平文様缶」新登場！焼き菓子詰合せと大和紅茶の2種類を同時発売",
-      "source": "Infoseek",
-      "url": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE14b1lVVU9VQ29ob1MwbWtiN2haUnNzWnRNQm5BNnZDQllWb2QwZl9HeTBMWTR6ZUc0WHBJb0RhNy13M1ZCTVdhYVRETTBGdEV0ekFzZC00TGZrNVNXeVBHOQ?oc=5",
+      "title": "宝物の美しい柄をあしらった「天平文様缶」新登場！ 焼き菓子詰合せと大和紅茶の2種類を同時発売",
+      "source": "アットプレス",
+      "url": "https://news.google.com/rss/articles/CBMiTkFVX3lxTE1QRTRBbVdwTnNJcDlJQTNySThOc0ZzYkRfbWh2LXVjNE9oYmUxOXZsVzBiUk1rbWs4aVZGM2p4R0U0a0s1YmE5bm8zTUVPQQ?oc=5",
       "publishedAt": "2026-10-14T01:30:00Z",
       "query": "紅茶"
     },
     {
-      "title": "宝物の美しい柄をあしらった「天平文様缶」新登場！ 焼き菓子詰合せと大和紅茶の2種類を同時発売",
-      "source": "アットプレス",
-      "url": "https://news.google.com/rss/articles/CBMiT0FVX3lxTE9DdWhKSWJtc1VEMmZwMkNobHFLTGdRNExEWHktaGJmNzJlYzV0aXVLT04ySjRzU3lReERBQkN4ZXdaZEpCUXl1NE54Q0FvZnc?oc=5",
+      "title": "宝物の美しい柄をあしらった「天平文様缶」新登場！焼き菓子詰合せと大和紅茶の2種類を同時発売",
+      "source": "Infoseek",
+      "url": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE14b1lVVU9VQ29ob1MwbWtiN2haUnNzWnRNQm5BNnZDQllWb2QwZl9HeTBMWTR6ZUc0WHBJb0RhNy13M1ZCTVdhYVRETTBGdEV0ekFzZC00TGZrNVNXeVBHOQ?oc=5",
       "publishedAt": "2026-10-14T01:30:00Z",
       "query": "紅茶"
     },
@@ -192,39 +213,11 @@
       "query": "紅茶"
     },
     {
-      "title": "NY発プレミアムティーブランド「HARNEY & SONS」、阪急うめだ本店で開催の「ワールド・ティー・フェスティバル 2026」に今年も出展。新作「ザ・ライブラリー・ブレンド」を先行販売 | HARNEY & SONS（株式会社メディカ・ライン）のプレスリリース",
-      "source": "PR TIMES",
-      "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE9aY3lnb2dtNHlwdzhUX3d5RmxsMVgyNllqdnNqNGZXVmpyU0NaaVNFRlFHbTBfRWt0YWdaNHlmZHM1VjJtbmFGN0JpQktTSVZDQTNhalVJRW83OFozMUcyaEhXS01aRl9uWXc?oc=5",
-      "publishedAt": "2026-10-14T01:00:02Z",
-      "query": "紅茶"
-    },
-    {
-      "title": "ふたも持ち手も食べられるティーポットケーキ大阪 中崎町で10月10日販売開始 | 紅茶美人 Tea Beautyのプレスリリース",
-      "source": "PR TIMES",
-      "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE00M1NGR3lkS0pRTll3aFE3Ujk5dzFzNVVTZWpVLXlPa2luOXJ3aWttLS16aURCVEhHblV0RDIwNF9FSDBNV1lONjFReDJGZ3F5UzNiQWZ4cHJ1TFVqYXZHNnlNZFVVVkdUYVE?oc=5",
-      "publishedAt": "2026-10-14T00:08:14Z",
-      "query": "紅茶"
-    },
-    {
       "title": "【阪神梅田本店】熊本が誇る“うまかもん”を満喫！県を越えて愛されるキャラクター「くまモン」が1日店長に就任し、全力で魅力をお届けいたします",
       "source": "イザ！",
       "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTE9ZVVNER1d5TklUMGhXeHRVZGUyVTcwUEV0QzVIUmtTY3hrcUZHd1JuRjJXS2FnU0xPYnFVYTdHQ1Bwc1ZUckdPM0NSb3kwbGJHa1I0QktoazcyOGVvWGRYMWV4T2VsZjJ6RHE2alJxRDBWOVlaY2ZXUG13?oc=5",
       "publishedAt": "2026-10-14T00:00:00Z",
       "query": "和紅茶"
-    },
-    {
-      "title": "争奪戦になりそう……！ 【ちいかわベーカリー】2周年記念フェアが10/15より開催。ちいかわたちがコロネになった限定マスコットや、紅茶缶が登場",
-      "source": "朝日新聞",
-      "url": "https://news.google.com/rss/articles/CBMiV0FVX3lxTE1DelhwajZPa1lfSzhsNF9JdS1NWkcwUFM2bHpQVzQxbUhqTzhNYmFFUXBBZC1pR1p2UENnamZiTE5rYmNxZUxEQVhhWEIyLVU4X1A5SmVBdw?oc=5",
-      "publishedAt": "2026-10-13T22:10:00Z",
-      "query": "紅茶"
-    },
-    {
-      "title": "【究極の2択】そば？うどん？珈琲と紅茶は？和食と洋食なら？？",
-      "source": "YouTube",
-      "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE1EQVZxNXhEYnoxcGRXeWZSY25wdGNkd0pkUml4N1NULTJJSDBFSGdkc1ExeDFJT0VONC1wcWptdThUX0VzMHhFTF9KdjJIa1NtS3EybE9jc2d6alZ1?oc=5",
-      "publishedAt": "2026-10-13T12:37:32Z",
-      "query": "紅茶"
     },
     {
       "title": "【茶況】和紅茶とリンゴを華やかなパフェに 掛川市・きみくらカフェ",
@@ -280,6 +273,13 @@
       "source": "山陽新聞",
       "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE9JNHdMWFcwT2tTc3NoMU04eXNYeUJtN3pkUUxOaDBQdzd0Y214Qnl0ckpQajBnV1hzVlh6ODlxcl9JbUN3RkcwS3J2b0lCY25IMFlvQnpJYk9aNWEyeF9YaGxOcUJ6RUE?oc=5",
       "publishedAt": "2026-10-06T23:30:00Z",
+      "query": "和紅茶"
+    },
+    {
+      "title": "和栗のモンブランと和紅茶、木頭柚子のパフェ カナデ ラウンジ／雅叙園東京｜OZmallレストラン予約",
+      "source": "オズモール",
+      "url": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE1VR1JKamNXajBET0pJLWhSZG1NOHVIMFhZUXBzSnJjZWx1ek9WczlTRk55SnZybGNFRFZrLXR5Z2MzQTJ2ZzV5aUhCRElFSS1TeExrNlVLd3k1Vl85enB2RG9DeUM?oc=5",
+      "publishedAt": "2026-10-06T08:21:41Z",
       "query": "和紅茶"
     }
   ]
