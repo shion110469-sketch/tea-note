@@ -61,6 +61,12 @@ const Timer = (() => {
     reset();
   }
 
+  function prev() {
+    if (s.steep <= 1) return;
+    s.steep--;
+    reset();
+  }
+
   function unlockAudio() {
     try {
       audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
@@ -103,7 +109,7 @@ const Timer = (() => {
   }, 200);
 
   return {
-    state: s, duration, left, setup, update, start, pause, reset, next,
+    state: s, duration, left, setup, update, start, pause, reset, next, prev,
     markConsumed() { s.consumed = true; },
     subscribe: f => subs.add(f),
   };

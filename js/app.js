@@ -14,6 +14,18 @@
   const isLow = t => Number(t.lowAt) > 0 && Number(t.stock) <= Number(t.lowAt);
   const RING = 2 * Math.PI * 110;
 
+  // 秒数を「分:秒」の選択肢にする（10秒刻み。今の値が刻みに合わなくても選択肢に含める）
+  function timeOptions(current, min, max, prefix = '') {
+    const cur = Number(current) || 0;
+    const values = [];
+    for (let v = min; v <= max; v += 10) values.push(v);
+    if (!values.includes(cur)) values.push(cur);
+    return values.sort((a, b) => a - b)
+      .map(v => `<option value="${v}" ${v === cur ? 'selected' : ''}>${prefix}${fmtTime(v * 1000)}</option>`).join('');
+  }
+  const STEEP_RANGE = [10, 900];   // 蒸らし：0:10〜15:00
+  const EXTRA_RANGE = [0, 300];    // 2煎目以降の追加：+0:00〜+5:00
+
   const view = $('#view');
   let lastRoute = '';
 
@@ -208,6 +220,10 @@
       <label class="param"><span>${label}</span>
         <span class="pin"><input type="number" inputmode="decimal" step="${step}" min="0" data-param="${key}" value="${esc(c[key])}" ${s.running ? 'disabled' : ''}><em>${unit}</em></span>
       </label>`;
+    const timeParam = (key, label, [min, max], prefix = '') => `
+      <label class="param"><span>${label}</span>
+        <span class="pin"><select data-param="${key}" ${s.running ? 'disabled' : ''}>${timeOptions(c[key], min, max, prefix)}</select><em>分:秒</em></span>
+      </label>`;
 
     return `
       <div class="page-head"><h1>タイマー</h1></div>
@@ -220,8 +236,8 @@
         ${param('temp', '温度', '℃')}
         ${param('amount', '茶葉', esc(c.unit), 0.5)}
         ${param('water', 'お湯', 'ml', 10)}
-        ${param('seconds', '蒸らし', '秒', 10)}
-        ${param('increment', '2煎目以降', '+秒', 10)}
+        ${timeParam('seconds', '蒸らし', STEEP_RANGE)}
+        ${timeParam('increment', '2煎目以降', EXTRA_RANGE, '+')}
       </div>
 
       <div class="ring-wrap">
@@ -231,7 +247,11 @@
           <circle cx="120" cy="120" r="110" class="ring-fg" id="ring-fg" stroke-dasharray="${RING}" stroke-dashoffset="0"/>
         </svg>
         <div class="ring-center">
-          <p class="steep">${s.steep}煎目</p>
+          <div class="steep-step">
+            <button class="steep-btn" data-act="timer-prev" aria-label="前の煎に戻す" ${s.steep <= 1 || s.running ? 'disabled' : ''}>‹</button>
+            <p class="steep">${s.steep}煎目</p>
+            <button class="steep-btn" data-act="timer-next" aria-label="次の煎へ" ${s.running ? 'disabled' : ''}>›</button>
+          </div>
           <p class="digits" id="timer-digits">0:00</p>
           <p class="muted">${esc(c.temp)}℃・${esc(c.amount)}${esc(c.unit)}・${esc(c.water)}ml</p>
         </div>
@@ -463,8 +483,8 @@
             ${num('temp', '温度', t.brew.temp, '℃')}
             ${num('amount', '茶葉', t.brew.amount, `<span class="unit-label">${esc(t.unit)}</span>`, 0.5)}
             ${num('water', 'お湯', t.brew.water, 'ml', 10)}
-            ${num('seconds', '蒸らし', t.brew.seconds, '秒', 10)}
-            ${num('increment', '2煎目以降', t.brew.increment, '+秒', 10)}
+            <label class="field"><span>蒸らし</span><span class="pin"><select name="seconds">${timeOptions(t.brew.seconds, ...STEEP_RANGE)}</select><em>分:秒</em></span></label>
+            <label class="field"><span>2煎目以降</span><span class="pin"><select name="increment">${timeOptions(t.brew.increment, ...EXTRA_RANGE, '+')}</select><em>分:秒</em></span></label>
           </div>
         </fieldset>
         <label class="field"><span>メモ</span><textarea name="memo" rows="2">${esc(t.memo || '')}</textarea></label>
@@ -623,6 +643,7 @@
     'timer-pause': () => Timer.pause(),
     'timer-reset': () => Timer.reset(),
     'timer-next': () => { applyConsume(); Timer.next(); },
+    'timer-prev': () => Timer.prev(),
     'done-close': () => { applyConsume(); Timer.reset(); },
     'done-note': () => {
       applyConsume();
