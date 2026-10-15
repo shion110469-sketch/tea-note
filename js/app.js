@@ -99,8 +99,69 @@
 
   const noteName = n => { const tea = n.teaId && Store.tea(n.teaId); return tea ? tea.name : n.teaName || ''; };
 
+  // ---------- プロのテイスティング評価 ----------
+  const readQuality = form => Object.fromEntries(PRO.quality.map(([k]) => [k, Number(form.elements['q_' + k].value)]));
+  const proScore = q => PRO.quality.reduce((s, [k]) => s + Number(q[k] || 0), 0) * 2; // 50点満点 → 100点満点
+  const scoreToStars = s => (s >= 90 ? 5 : s >= 75 ? 4 : s >= 60 ? 3 : s >= 40 ? 2 : 1);
+  // 香りの表現と味の強さから、好みの分析に使う味タグを作る
+  function proTags(p) {
+    const tags = new Set(PRO.aromas.filter(a => a.tag && p.aromaNotes.includes(a.v)).map(a => a.tag));
+    const f = p.profile;
+    if (f.astringency >= 4) tags.add('渋み');
+    if (f.body >= 4) tags.add('コク');
+    if (f.sweetness >= 4) tags.add('甘い');
+    if (f.astringency <= 2 && f.bitterness <= 2) tags.add('マイルド');
+    return [...tags];
+  }
+  const liquorHex = name => (PRO.liquors.find(l => l.name === name) || {}).hex;
+
+  // 品質評価（外観・水色・香り・味・余韻）のレーダーチャート
+  function radar(q) {
+    const C = 60, R = 40, N = PRO.quality.length;
+    const pt = (i, r) => {
+      const a = (-90 + (360 / N) * i) * Math.PI / 180;
+      return [C + r * Math.cos(a), C + r * Math.sin(a)];
+    };
+    const poly = r => PRO.quality.map((_, i) => pt(i, r).map(v => v.toFixed(1)).join(',')).join(' ');
+    const data = PRO.quality.map(([k], i) => pt(i, R * Math.max(0, Math.min(10, q[k] || 0)) / 10).map(v => v.toFixed(1)).join(',')).join(' ');
+    return `<svg class="radar" viewBox="0 0 120 120" role="img" aria-label="品質評価：${PRO.quality.map(([k, l]) => `${l}${q[k]}`).join('、')}">
+      <polygon points="${poly(R)}" class="radar-grid"/><polygon points="${poly(R / 2)}" class="radar-grid"/>
+      ${PRO.quality.map((_, i) => `<line x1="${C}" y1="${C}" x2="${pt(i, R)[0].toFixed(1)}" y2="${pt(i, R)[1].toFixed(1)}" class="radar-grid"/>`).join('')}
+      <polygon points="${data}" class="radar-data"/>
+      ${PRO.quality.map(([, label], i) => { const [x, y] = pt(i, R + 11); return `<text x="${x.toFixed(1)}" y="${(y + 3).toFixed(1)}" text-anchor="middle" class="radar-label">${label}</text>`; }).join('')}
+    </svg>`;
+  }
+
+  function proSummary(n) {
+    const p = n.pro, b = p.brew || {};
+    const brewText = [b.temp != null && `${b.temp}℃`, b.amount != null && `${b.amount}g`, b.water != null && `${b.water}ml`, b.seconds && fmtTime(b.seconds * 1000)].filter(Boolean).join('・');
+    return `
+        <div class="pro-sum">
+          ${radar(p.quality || {})}
+          <div class="pro-facts">
+            ${p.liquor ? `<p><span class="swatch" style="background:${liquorHex(p.liquor)}"></span>水色：${esc(p.liquor)}${p.clarity ? `（${esc(p.clarity)}）` : ''}</p>` : ''}
+            ${p.leafColor ? `<p>茶殻：${esc(p.leafColor)}</p>` : ''}
+            ${brewText ? `<p>抽出：${brewText}</p>` : ''}
+            ${p.aromaNotes && p.aromaNotes.length ? `<div class="chips">${chips(p.aromaNotes.slice(0, 5))}</div>` : ''}
+          </div>
+        </div>`;
+  }
+
   function noteCard(n) {
     const photos = n.photos || [];
+    const isPro = n.mode === 'pro' && n.pro;
+    if (isPro) return `
+      <article class="card note-card pro-card" data-act="edit-note" data-id="${n.id}">
+        <div class="row between">
+          <h3>${esc(noteName(n) || '（紅茶の名前なし）')}</h3>
+          <span class="pro-score"><em>PRO</em>${n.pro.score}<small>点</small></span>
+        </div>
+        <p class="muted">${fmtDate(n.date)}・${esc(n.style || 'ストレート')}${n.pro.grade ? `・${esc(n.pro.grade.replace(/（.*）/, ''))}` : ''}</p>
+        ${proSummary(n)}
+        ${photos.length ? `<div class="thumbs">${photos.map(id => `
+          <button type="button" class="thumb" data-act="view-photo" data-photo-id="${esc(id)}" aria-label="写真を大きく見る"><img data-photo="${esc(id)}" alt=""></button>`).join('')}</div>` : ''}
+        ${n.memo ? `<p class="memo">${esc(n.memo)}</p>` : ''}
+      </article>`;
     return `
       <article class="card note-card" data-act="edit-note" data-id="${n.id}">
         <div class="row between">
@@ -370,7 +431,8 @@
       .filter(n => !calDay || toDateInput(n.date) === calDay)
       .filter(n => {
         if (!words.length) return true;
-        const text = normalize([noteName(n), n.memo, n.style, ...(n.tags || [])].join(' '));
+        const p = n.mode === 'pro' && n.pro ? n.pro : {};
+        const text = normalize([noteName(n), n.memo, n.style, ...(n.tags || []), p.grade, p.liquor, p.leafColor, ...(p.aromaNotes || [])].join(' '));
         return words.every(w => text.includes(w));
       })
       .sort(NOTE_SORTS[noteSort][1]);
@@ -439,10 +501,82 @@
         <input type="range" min="1" max="5" step="1" name="${key}" value="${n[key]}">
         <span class="scale"><em>${lo}</em><em>${hi}</em></span>
       </label>`;
+
+    // ノーマル／プロ：過去の記録は記録したときのモード、新しい記録は前回使ったモード
+    let lastMode = 'normal';
+    try { lastMode = localStorage.getItem('teanote.noteMode') || 'normal'; } catch (e) { /* 既定はノーマル */ }
+    const mode = isNew ? lastMode : (n.mode || 'normal');
+
+    // プロの初期値（抽出条件は、タイマーから記録したときの条件→茶葉の淹れ方の順に使う）
+    const P = n.pro || {};
+    const brew = P.brew || n.brew || (linked && linked.brew) || {};
+    const q = { appearance: 7, liquor: 7, aroma: 7, taste: 7, finish: 7, ...(P.quality || {}) };
+    const prof = { astringency: 3, bitterness: 2, sweetness: 3, body: 3, acidity: 2, aromaStrength: 3, ...(P.profile || {}) };
+    const pickOne = (name, items, current, render) => `
+      <div class="chips pick" data-pick="${name}">${items.map(it => {
+        const v = typeof it === 'string' ? it : it.name;
+        return `<button type="button" class="chip ${current === v ? 'on' : ''}" data-act="pick-one" data-v="${esc(v)}">${render ? render(it) : esc(v)}</button>`;
+      }).join('')}<input type="hidden" name="${name}" value="${esc(current || '')}"></div>`;
+    const proNum = (name, label, val, unit, step = 1) => `
+      <label class="field"><span>${label}</span><span class="pin"><input type="number" inputmode="decimal" min="0" step="${step}" name="${name}" value="${esc(val ?? '')}"><em>${unit}</em></span></label>`;
+    const proForm = `
+        <section class="pro-sec">
+          <h4>抽出条件</h4>
+          <div class="grid4">
+            ${proNum('p_temp', '温度', brew.temp, '℃')}
+            ${proNum('p_amount', '茶葉', brew.amount, 'g', 0.5)}
+            ${proNum('p_water', 'お湯', brew.water, 'ml', 10)}
+            <div class="field"><span>蒸らし</span><span class="pin">${mmssPicker(brew.seconds || 180, 'data-field="p_seconds"')}</span>
+              <input type="hidden" name="p_seconds" value="${esc(brew.seconds || 180)}"></div>
+          </div>
+        </section>
+        <section class="pro-sec">
+          <h4>茶葉（外観）</h4>
+          <label class="field"><span>グレード</span>
+            <select name="p_grade"><option value="">選択しない</option>${PRO.grades.map(g => `<option ${P.grade === g ? 'selected' : ''}>${esc(g)}</option>`).join('')}</select>
+          </label>
+        </section>
+        <section class="pro-sec">
+          <h4>水色（すいしょく）</h4>
+          ${pickOne('p_liquor', PRO.liquors, P.liquor, it => `<span class="swatch" style="background:${it.hex}"></span>${esc(it.name)}`)}
+          ${pickOne('p_clarity', PRO.clarity, P.clarity)}
+        </section>
+        <section class="pro-sec">
+          <h4>香りの表現</h4>
+          <div class="chips pick" id="pro-aroma">${PRO.aromas.map(a => `<button type="button" class="chip ${(P.aromaNotes || []).includes(a.v) ? 'on' : ''}" data-act="toggle-chip" data-v="${esc(a.v)}">${esc(a.v)}</button>`).join('')}</div>
+        </section>
+        <section class="pro-sec">
+          <h4>茶殻（葉底）の色</h4>
+          ${pickOne('p_leaf', PRO.leafColors, P.leafColor)}
+        </section>
+        <section class="pro-sec">
+          <h4>品質評価 <span class="pro-total" id="pro-total">${proScore(q)}点</span></h4>
+          ${PRO.quality.map(([k, label]) => `
+            <label class="slider q-slider"><span>${label}</span>
+              <input type="range" min="1" max="10" step="1" name="q_${k}" value="${q[k]}">
+              <b class="q-val">${q[k]}</b>
+            </label>`).join('')}
+          <p class="hint">各10点で採点し、合計を100点満点に換算します。★は総合点から自動で付きます。</p>
+        </section>
+        <section class="pro-sec">
+          <h4>味の特徴（強さ）</h4>
+          ${PRO.profile.map(([k, label, lo, hi]) => `
+            <label class="slider"><span>${label}</span>
+              <input type="range" min="1" max="5" step="1" name="f_${k}" value="${prof[k]}">
+              <span class="scale"><em>${lo}</em><em>${hi}</em></span>
+            </label>`).join('')}
+        </section>`;
+
     openSheet(isNew ? '味を記録する' : '記録を編集', `
-      <form id="note-form" class="form">
+      <form id="note-form" class="form" data-mode="${mode}">
+        <div class="seg" role="tablist" aria-label="記録のモード">
+          <button type="button" role="tab" data-act="note-mode" data-mode="normal" aria-selected="${mode === 'normal'}">ノーマル</button>
+          <button type="button" role="tab" data-act="note-mode" data-mode="pro" aria-selected="${mode === 'pro'}">プロ</button>
+        </div>
+        <p class="hint mode-hint normal-only">★と味のタグで気軽に記録します。</p>
+        <p class="hint mode-hint pro-only">水色・香り・品質評価などを本格的に記録します（100点満点）。</p>
         ${teaField}
-        <div class="field"><span>評価</span>
+        <div class="field normal-only"><span>評価</span>
           <div class="rating" id="rating">${[1, 2, 3, 4, 5].map(v => `<button type="button" data-act="rate" data-v="${v}" class="${v <= n.rating ? 'on' : ''}">★</button>`).join('')}</div>
           <input type="hidden" name="rating" value="${n.rating}">
         </div>
@@ -452,12 +586,15 @@
           </label>
           <label class="field grow"><span>日付</span><input type="date" name="date" value="${toDateInput(n.date)}"></label>
         </div>
-        <div class="field"><span>感じた味・香り</span>
-          <div class="chips pick">${TAGS.map(t => `<button type="button" class="chip ${n.tags.includes(t) ? 'on' : ''}" data-act="toggle-chip" data-v="${esc(t)}">${esc(t)}</button>`).join('')}</div>
+        <div class="normal-only form">
+          <div class="field"><span>感じた味・香り</span>
+            <div class="chips pick" id="normal-tags">${TAGS.map(t => `<button type="button" class="chip ${n.tags.includes(t) ? 'on' : ''}" data-act="toggle-chip" data-v="${esc(t)}">${esc(t)}</button>`).join('')}</div>
+          </div>
+          ${slider('aroma', '香り', '控えめ', '豊か')}
+          ${slider('astringency', '渋み', '弱い', '強い')}
+          ${slider('body', 'コク', '軽い', '濃い')}
         </div>
-        ${slider('aroma', '香り', '控えめ', '豊か')}
-        ${slider('astringency', '渋み', '弱い', '強い')}
-        ${slider('body', 'コク', '軽い', '濃い')}
+        <div class="pro-only form">${proForm}</div>
         <label class="field"><span>メモ</span><textarea name="memo" rows="3" placeholder="香り、合わせたお菓子など">${esc(n.memo || '')}</textarea></label>
         <div class="field"><span>写真（${MAX_PHOTOS}枚まで）</span>
           <div class="thumbs edit" id="note-photos"></div>
@@ -470,7 +607,23 @@
 
     const form = $('#note-form');
     const sel = form.elements.teaId;
-    if (sel) sel.addEventListener('change', () => { $('#tea-name-field').hidden = sel.value !== '__other'; });
+    if (sel) sel.addEventListener('change', () => {
+      $('#tea-name-field').hidden = sel.value !== '__other';
+      // プロの抽出条件が空なら、選んだ茶葉の淹れ方で埋める
+      const t = Store.tea(sel.value);
+      const els = ['p_temp', 'p_amount', 'p_water'].map(k => form.elements[k]);
+      if (t && t.brew && els.every(el => el.value === '')) {
+        [els[0].value, els[1].value, els[2].value] = [t.brew.temp, t.brew.amount, t.brew.water];
+        form.elements.p_seconds.value = t.brew.seconds;
+        setMmss($('[data-field="p_seconds"]', form), t.brew.seconds);
+      }
+    });
+    // 品質評価のスライダーを動かしたら、点数と合計を更新
+    form.addEventListener('input', e => {
+      if (!e.target.name || !e.target.name.startsWith('q_')) return;
+      e.target.nextElementSibling.textContent = e.target.value;
+      $('#pro-total').textContent = proScore(readQuality(form)) + '点';
+    });
 
     // 写真：保存済み（kept）と、この画面で追加したもの（added）を分けて持ち、保存時に反映する
     const kept = [...(n.photos || [])];
@@ -528,20 +681,49 @@
         toast('写真を保存できませんでした');
         photos = [...kept];
       }
-      Store.saveNote({
+      const mode = form.dataset.mode;
+      try { localStorage.setItem('teanote.noteMode', mode); } catch (err) { /* 覚えられなくても続行 */ }
+      const common = {
         id: n.id || uid(),
+        mode,
         teaId,
         teaName,
         photos,
-        rating: Number(form.elements.rating.value),
         style: form.elements.style.value,
         date: form.elements.date.value ? new Date(form.elements.date.value + 'T12:00:00').getTime() : Date.now(),
-        tags: $$('.chip.on', form).map(b => b.dataset.v),
-        aroma: Number(form.elements.aroma.value),
-        astringency: Number(form.elements.astringency.value),
-        body: Number(form.elements.body.value),
         memo: form.elements.memo.value.trim(),
-      });
+      };
+      if (mode === 'pro') {
+        const num = k => (form.elements[k].value === '' ? null : Number(form.elements[k].value));
+        const pro = {
+          brew: { temp: num('p_temp'), amount: num('p_amount'), water: num('p_water'), seconds: num('p_seconds') },
+          grade: form.elements.p_grade.value,
+          liquor: form.elements.p_liquor.value,
+          clarity: form.elements.p_clarity.value,
+          aromaNotes: $$('#pro-aroma .chip.on', form).map(b => b.dataset.v),
+          leafColor: form.elements.p_leaf.value,
+          quality: readQuality(form),
+          profile: Object.fromEntries(PRO.profile.map(([k]) => [k, Number(form.elements['f_' + k].value)])),
+        };
+        pro.score = proScore(pro.quality);
+        // 好みの分析・並べ替え用に、★・味タグ・香り/渋み/コクも合わせて持つ
+        Store.saveNote({
+          ...common, pro,
+          rating: scoreToStars(pro.score),
+          tags: proTags(pro),
+          aroma: pro.profile.aromaStrength, astringency: pro.profile.astringency, body: pro.profile.body,
+        });
+      } else {
+        Store.saveNote({
+          ...common,
+          pro: n.pro, // プロで記録していた内容は残しておく（プロに戻せば使える）
+          rating: Number(form.elements.rating.value),
+          tags: $$('#normal-tags .chip.on', form).map(b => b.dataset.v),
+          aroma: Number(form.elements.aroma.value),
+          astringency: Number(form.elements.astringency.value),
+          body: Number(form.elements.body.value),
+        });
+      }
       closeSheet();
       toast('記録しました');
       render();
@@ -830,6 +1012,19 @@
       $$('#rating button').forEach(b => b.classList.toggle('on', Number(b.dataset.v) <= v));
     },
     'toggle-chip': el => el.classList.toggle('on'),
+    // 1つだけ選ぶチップ（もう一度押すと選択を外す）
+    'pick-one': el => {
+      const box = el.closest('[data-pick]');
+      const on = !el.classList.contains('on');
+      $$('.chip', box).forEach(c => c.classList.remove('on'));
+      el.classList.toggle('on', on);
+      box.querySelector('input[type=hidden]').value = on ? el.dataset.v : '';
+    },
+    'note-mode': el => {
+      const form = $('#note-form');
+      form.dataset.mode = el.dataset.mode;
+      $$('[data-act="note-mode"]', form).forEach(b => b.setAttribute('aria-selected', String(b === el)));
+    },
     'sheet-close': () => closeSheet(),
     'show-onboarding': () => window.showOnboarding && window.showOnboarding(),
     'news-filter': el => { newsFilter = el.dataset.q; render(); },
@@ -842,7 +1037,10 @@
       applyConsume();
       const c = Timer.state.cfg;
       Timer.reset();
-      openNoteForm({ teaId: c.teaId || null, teaName: c.teaId ? '' : c.label, style: c.style || 'ストレート' });
+      openNoteForm({
+        teaId: c.teaId || null, teaName: c.teaId ? '' : c.label, style: c.style || 'ストレート',
+        brew: { temp: c.temp, amount: c.amount, water: c.water, seconds: c.seconds }, // プロの抽出条件に使う
+      });
     },
     'export': async () => {
       // 茶葉・記録に加えて、記録の写真もまとめて1つのファイルにする
