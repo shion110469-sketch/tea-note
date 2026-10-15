@@ -36,6 +36,20 @@
     },
   ];
 
+  // ストア版：ニュースの取得元が決まるまではニュースの紹介を出さず、最後に Pro を紹介する
+  if (!Platform.news) {
+    SLIDES[0].points = SLIDES[0].points.filter(p => !p.includes('ニュース'));
+    SLIDES.splice(SLIDES.findIndex(s => s.icon === 'news'), 1);
+  }
+  if (Platform.store) {
+    SLIDES[0].points.push('記録をグラフでふり返る');
+    SLIDES.push({
+      icon: 'chart', eyebrow: 'PRO', title: 'もっと深く楽しむなら Pro',
+      text: '水色・香り・品質を100点満点で採点するプロの記録、写真3枚、記録をふり返る統計が使えます。最初の1週間は無料です。',
+      how: '「記録」タブの「プロ」や「統計を見る」から',
+    });
+  }
+
   function isFirstLaunch() {
     try {
       if (localStorage.getItem(KEY) === '1') return false;
@@ -67,7 +81,7 @@
               <p class="ob-text">${s.text}</p>
               ${s.points ? `<ul class="ob-points">${s.points.map(p => `<li>${ICONS.check}${p}</li>`).join('')}</ul>` : ''}
               ${s.how ? `<p class="ob-how"><b>使い方</b>${s.how}</p>` : ''}
-              ${i === last && !isStandalone() ? '<p class="ob-tip">ブラウザの共有メニューから「ホーム画面に追加」すると、アプリのように使えます</p>' : ''}
+              ${i === last && !isStandalone() && !Platform.store ?'<p class="ob-tip">ブラウザの共有メニューから「ホーム画面に追加」すると、アプリのように使えます</p>' : ''}
             </section>`).join('')}
         </div>
         <div class="ob-bottom">

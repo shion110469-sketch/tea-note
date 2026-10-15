@@ -531,6 +531,76 @@ input[type=date] { min-width: 0; max-width: 100%; display: block; -webkit-appear
 .ob-dots span.on { width: 22px; background: var(--accent); }
 .ob-next { width: 100%; max-width: 420px; }
 
+/* ---------- 紅茶ノート Pro（ストア版） ---------- */
+.pro-tag {
+  display: inline-block; margin-left: 6px; padding: 1px 6px; border-radius: 4px;
+  background: var(--gold); color: #fff; font-style: normal; font-size: 10px; font-weight: 700; letter-spacing: .08em; vertical-align: 2px;
+}
+.paywall .sheet-backdrop { z-index: 24; }
+.paywall .sheet { z-index: 25; display: flex; flex-direction: column; gap: 14px; }
+.paywall .sheet-head { padding-bottom: 0; }
+.pw-hero { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+.pw-cup {
+  display: grid; place-items: center; width: 60px; height: 60px; margin-bottom: 4px; border-radius: 18px;
+  background: linear-gradient(140deg, var(--hero-1), var(--hero-2) 60%, var(--hero-3)); color: #FFE2C8; box-shadow: var(--shadow);
+}
+.pw-cup svg { width: 34px; height: 34px; }
+.pw-hero h2 { font-family: var(--serif); font-size: 24px; }
+.pw-reason { margin-top: 4px; padding: 4px 12px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-size: 13px; font-weight: 700; }
+.pw-list { list-style: none; margin: 0; padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); }
+.pw-list li { display: flex; gap: 10px; align-items: flex-start; }
+.pw-list svg { flex: none; width: 22px; height: 22px; padding: 3px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); }
+.pw-list div { display: flex; flex-direction: column; gap: 2px; }
+.pw-list span { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.pw-terms { font-size: 11px; color: var(--muted); line-height: 1.6; text-align: center; }
+/* 購入ボタンと条件は、画面の下に常に表示する */
+.pw-cta {
+  order: 10; position: sticky; bottom: calc(-24px - env(safe-area-inset-bottom)); z-index: 1; /* シートの下の余白の分だけ下げて、画面の下端に付ける */
+  display: flex; flex-direction: column; gap: 6px;
+  margin: 0 -16px calc(-24px - env(safe-area-inset-bottom)); padding: 12px 16px calc(14px + env(safe-area-inset-bottom));
+  background: var(--bg); border-top: 1px solid var(--line);
+}
+.pw-on { text-align: center; font-weight: 700; color: var(--accent); }
+.linklike { align-self: center; border: 0; background: none; padding: 6px; color: var(--muted); font-size: 12px; text-decoration: underline; cursor: pointer; }
+.pro-plan { border-color: var(--gold); }
+.pro-lock { align-items: center; text-align: center; gap: 8px; padding: 28px 20px; }
+.pro-lock .btn { margin-top: 6px; }
+.thumb-lock { border-style: dashed; color: var(--gold); cursor: pointer; }
+
+/* 統計への入口 */
+.stats-link { flex-direction: row; align-items: center; gap: 12px; width: 100%; text-align: left; font: inherit; color: inherit; cursor: pointer; }
+.stats-link .grow { display: flex; flex-direction: column; gap: 2px; }
+.stats-link small { font-size: 12px; color: var(--muted); }
+.stats-link .chev { font-size: 22px; color: var(--muted); }
+
+/* 統計 */
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.stat { display: flex; flex-direction: column; gap: 2px; padding: 14px 16px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); }
+.stat b { font-family: var(--serif); font-size: 28px; color: var(--accent); font-variant-numeric: tabular-nums; line-height: 1.2; }
+.stat span { font-size: 12px; color: var(--muted); }
+.mbars { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; align-items: end; }
+.mbar { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; }
+.mbar b { min-height: 1.2em; font-variant-numeric: tabular-nums; }
+.mbar-col { display: flex; align-items: flex-end; width: 100%; max-width: 34px; height: 110px; border-radius: 8px; background: var(--surface-2); overflow: hidden; }
+.mbar-col span { display: block; width: 100%; border-radius: 8px; background: linear-gradient(var(--hero-3), var(--accent)); }
+.mbar em { font-style: normal; color: var(--ink-2); }
+.mbar small { min-height: 1.2em; font-size: 10px; color: var(--gold); }
+.hbar { display: grid; grid-template-columns: minmax(0, 7em) minmax(0, 1fr) auto; align-items: center; gap: 10px; font-size: 13px; }
+.hbar-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hbar-track { height: 10px; border-radius: 5px; background: var(--surface-2); overflow: hidden; }
+.hbar-track span { display: block; height: 100%; border-radius: 5px; background: var(--accent); }
+.hbar-val { color: var(--muted); font-size: 12px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.trend { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; padding-top: 10px; border-top: 1px solid var(--line); }
+.trend p { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.trend-label { width: 6em; font-size: 12px; font-weight: 400; color: var(--muted); }
+
+/* 購入リンク（PR） */
+.buy .pr, .pr-note::first-letter { font-weight: 700; }
+.buy .pr { padding: 0 4px; border-radius: 3px; border: 1px solid currentColor; font-size: 9px; line-height: 1.4; letter-spacing: .05em; }
+.buy-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.alert .buy { min-height: 32px; border-color: var(--warn); color: var(--warn); background: var(--surface); }
+.pr-note { font-size: 11px; color: var(--muted); text-align: center; line-height: 1.6; }
+
 @media (max-width: 380px) {
   .guide-grid { grid-template-columns: 1fr; }
 }

@@ -13,7 +13,9 @@
   const guideById = id => GUIDES.find(g => g.id === id);
   const isLow = t => Number(t.lowAt) > 0 && Number(t.stock) <= Number(t.lowAt);
   const RING = 2 * Math.PI * 110;
-  const MAX_PHOTOS = 3; // 1つの記録に付けられる写真の数
+  const MAX_PHOTOS = 3; // 1つの記録に付けられる写真の数（Pro）
+  const FREE_PHOTOS = 1; // 無料で付けられる写真の数（ストア版）
+  const photoLimit = () => (Pro.active ? MAX_PHOTOS : FREE_PHOTOS);
 
   // 蒸らし時間の入力：「分」と「秒」を別々に選ぶ（1秒単位、最長 15:59）
   // attrs: data-time-param（タイマーの設定名）か data-field（フォームの hidden 入力名）を付ける
@@ -49,7 +51,7 @@
     const routes = {
       home: viewHome, timer: viewTimer, notes: viewNotes, teas: viewTeas,
       tea: () => viewTeaDetail(arg), guide: () => (arg ? viewGuideDetail(arg) : viewGuides()),
-      news: viewNews,
+      news: Platform.news ? viewNews : viewHome, stats: viewStats,
     };
     const key = name + '/' + arg;
     // 記録タブを開き直したら、カレンダーは今月・日付の選択なしに戻す
@@ -60,7 +62,7 @@
     }
     view.innerHTML = (routes[name] || viewHome)();
     Photos.hydrate(view);
-    const tab = { tea: 'teas' }[name] || name;
+    const tab = { tea: 'teas', stats: 'notes' }[name] || name;
     $$('.tabbar a').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
     if (key !== lastRoute) { view.scrollTop = 0; lastRoute = key; }
     if (name === 'timer') updateTimerDisplay();
@@ -96,6 +98,12 @@
         </div>
       </article>`;
   }
+
+  // 購入リンク（ストア版のみ。Amazonの検索結果を開く・PR表記つき）
+  const amazonUrl = words => `https://www.amazon.co.jp/s?k=${encodeURIComponent(words)}${STORE_CONFIG.amazonTag ? `&tag=${encodeURIComponent(STORE_CONFIG.amazonTag)}` : ''}`;
+  const buyBtn = (words, label = 'Amazonで探す') => (Platform.store
+    ? `<button class="btn small ghost buy" data-act="open-url" data-url="${esc(amazonUrl(words))}"><span class="pr">PR</span>${esc(label)}</button>` : '');
+  const prNote = () => (Platform.store ? '<p class="pr-note">PR：Amazonのアソシエイトとして、紅茶ノートは適格販売により収入を得ています。</p>' : '');
 
   const noteName = n => { const tea = n.teaId && Store.tea(n.teaId); return tea ? tea.name : n.teaName || ''; };
 
@@ -218,7 +226,8 @@
         <button data-act="new-tea"><span class="qi">${ICONS.leaf}</span>茶葉を登録</button>
         <button data-act="new-note"><span class="qi">${ICONS.note}</span>味を記録</button>
       </div>
-      ${low.length ? `<div class="alert" data-act="go" data-to="teas"><b>在庫が少なくなっています</b><span>${low.map(t => esc(t.name)).join('、')}</span></div>` : ''}
+      ${low.length ? `<div class="alert" data-act="go" data-to="teas"><b>在庫が少なくなっています</b><span>${low.map(t => esc(t.name)).join('、')}</span>
+        ${Platform.store ? `<div class="buy-row">${low.slice(0, 3).map(t => buyBtn([t.brand, t.name].filter(Boolean).join(' '), `${t.name}を買い足す`)).join('')}</div>` : ''}</div>` : ''}
 
       <h2 class="sec">在庫からのおすすめ</h2>
       ${stockRecs.length ? `<div class="hscroll">${stockRecs.map(r => `
@@ -240,6 +249,7 @@
           <div class="row gap">
             <button class="btn small ghost" data-act="brew-preset" data-preset="${item.preset}" data-label="${esc(item.name)}">淹れ方でタイマー</button>
             ${item.guide ? `<button class="btn small ghost" data-act="go" data-to="guide/${item.guide}">ガイドを見る</button>` : ''}
+            ${buyBtn(`${item.name} 紅茶 茶葉`)}
           </div>
         </article>`).join('')}</div>
 
@@ -255,6 +265,7 @@
         : homeNotes === 'top'
           ? `<div class="stack">${picked.map((n, i) => `<div class="ranked"><span class="rank rank-${i + 1}" aria-label="${i + 1}位">${i + 1}</span>${noteCard(n)}</div>`).join('')}</div>`
           : `<div class="stack">${picked.map(noteCard).join('')}</div>`}
+      ${prNote()}
     `;
   }
 
@@ -265,7 +276,7 @@
   function loadNews() {
     if (newsState !== 'idle') return; // 失敗時は「再読み込み」ボタンで idle に戻す
     newsState = 'loading';
-    fetch('news.json', { cache: 'no-cache' })
+    fetch(Platform.newsUrl, { cache: 'no-cache' })
       .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(d => { news = d; newsState = 'ok'; })
       .catch(() => { newsState = 'error'; })
@@ -484,6 +495,11 @@
         ${liked.length ? `<div class="chips">${chips(liked, 'accent')}</div><p class="muted">★4以上の記録から分析しています</p>`
           : '<p class="muted">★をつけた記録が増えると、好みの傾向を分析します</p>'}
       </div>
+      <button class="card stats-link" data-act="go" data-to="stats">
+        <span class="qi">${ICONS.chart}</span>
+        <span class="grow"><b>統計を見る</b><small>月ごとの杯数・よく飲む紅茶・好きな味</small></span>
+        ${Pro.active ? '<span class="chev">›</span>' : '<em class="pro-tag">PRO</em>'}
+      </button>
       ${calDay ? `
         <div class="row between sec-row">
           <h2 class="sec">${dm}月${dd}日の記録</h2>
@@ -536,7 +552,9 @@
     // ノーマル／プロ：過去の記録は記録したときのモード、新しい記録は前回使ったモード
     let lastMode = 'normal';
     try { lastMode = localStorage.getItem('teanote.noteMode') || 'normal'; } catch (e) { /* 既定はノーマル */ }
-    const mode = isNew ? lastMode : (n.mode || 'normal');
+    // プロは Pro の機能（Pro をやめた後も、プロで記録済みのものは編集できる）
+    const wasPro = n.mode === 'pro';
+    const mode = isNew ? (lastMode === 'pro' && !Pro.active ? 'normal' : lastMode) : (n.mode || 'normal');
 
     // 抽出条件の初期値：記録済みの条件 → タイマーから記録したときの条件 → 茶葉の淹れ方
     const P = n.pro || {};
@@ -602,10 +620,10 @@
         </section>`;
 
     openSheet(isNew ? '味を記録する' : '記録を編集', `
-      <form id="note-form" class="form" data-mode="${mode}">
+      <form id="note-form" class="form" data-mode="${mode}" data-was-pro="${wasPro ? '1' : ''}">
         <div class="seg" role="tablist" aria-label="記録のモード">
           <button type="button" role="tab" data-act="note-mode" data-mode="normal" aria-selected="${mode === 'normal'}">ノーマル</button>
-          <button type="button" role="tab" data-act="note-mode" data-mode="pro" aria-selected="${mode === 'pro'}">プロ</button>
+          <button type="button" role="tab" data-act="note-mode" data-mode="pro" aria-selected="${mode === 'pro'}">プロ${Pro.active || wasPro ? '' : '<em class="pro-tag">PRO</em>'}</button>
         </div>
         <p class="hint mode-hint normal-only">★と味のタグで気軽に記録します。</p>
         <p class="hint mode-hint pro-only">水色・香り・品質評価などを本格的に記録します（100点満点）。</p>
@@ -631,7 +649,7 @@
         </div>
         <div class="pro-only form">${proForm}</div>
         <label class="field"><span>メモ</span><textarea name="memo" rows="3" placeholder="香り、合わせたお菓子など">${esc(n.memo || '')}</textarea></label>
-        <div class="field"><span>写真（${MAX_PHOTOS}枚まで）</span>
+        <div class="field"><span>写真（${Pro.active ? `${MAX_PHOTOS}枚まで` : `${FREE_PHOTOS}枚まで・Proは${MAX_PHOTOS}枚`}）</span>
           <div class="thumbs edit" id="note-photos"></div>
         </div>
         <div class="row gap end">
@@ -670,11 +688,14 @@
           <span class="thumb"><img data-photo="${esc(id)}" alt="記録の写真"><button type="button" class="thumb-del" data-kind="kept" data-id="${esc(id)}" aria-label="写真を外す">×</button></span>`).join('')
         + added.map(p => `
           <span class="thumb"><img src="${p.url}" alt="追加する写真"><button type="button" class="thumb-del" data-kind="added" data-id="${p.id}" aria-label="写真を外す">×</button></span>`).join('')
-        + (total < MAX_PHOTOS ? `
-          <label class="thumb thumb-add">${ICONS.camera}<span>追加</span><input type="file" accept="image/*" multiple hidden></label>` : '');
+        + (total < photoLimit() ? `
+          <label class="thumb thumb-add">${ICONS.camera}<span>追加</span><input type="file" accept="image/*" multiple hidden></label>`
+          : total < MAX_PHOTOS ? `
+          <button type="button" class="thumb thumb-add thumb-lock" aria-label="Pro で写真を追加">${ICONS.camera}<span>PRO</span></button>` : '');
       Photos.hydrate(photoBox);
     }
     photoBox.addEventListener('click', e => {
+      if (e.target.closest('.thumb-lock')) { openPaywall('photos', renderPhotos); return; }
       const del = e.target.closest('.thumb-del');
       if (!del) return;
       e.preventDefault();
@@ -687,7 +708,7 @@
       renderPhotos();
     });
     photoBox.addEventListener('change', async e => {
-      const files = [...(e.target.files || [])].slice(0, MAX_PHOTOS - kept.length - added.length);
+      const files = [...(e.target.files || [])].slice(0, photoLimit() - kept.length - added.length);
       for (const f of files) {
         try {
           const blob = await Photos.shrink(f);
@@ -768,6 +789,115 @@
     form.dataset.id = n.id || '';
   }
 
+  // ---------- 統計（Pro） ----------
+  const hbar = (label, v, max, right) => `
+    <div class="hbar"><span class="hbar-label">${label}</span>
+      <span class="hbar-track"><span style="width:${max ? Math.round(v / max * 100) : 0}%"></span></span>
+      <span class="hbar-val">${right}</span></div>`;
+  const avgOf = arr => (arr.length ? arr.reduce((s, v) => s + v, 0) / arr.length : 0);
+  // ★4以上の記録によく出てくる味タグ（多い順）
+  function tagRank(notes) {
+    const c = {};
+    notes.filter(n => n.rating >= 4).forEach(n => (n.tags || []).forEach(t => { c[t] = (c[t] || 0) + 1; }));
+    return Object.entries(c).sort((a, b) => b[1] - a[1]);
+  }
+
+  function viewStats() {
+    const head = '<button class="back" data-act="go" data-to="notes">‹ 記録</button><div class="page-head"><h1>統計</h1></div>';
+    if (!Pro.active) return head + `
+      <div class="card pro-lock">
+        <span class="qi">${ICONS.chart}</span>
+        <p class="eyebrow">PRO</p>
+        <h3>記録を、グラフでふり返る</h3>
+        <p class="muted">月ごとの杯数、よく飲む紅茶、好きな味の傾向や、その変化を見られます。</p>
+        <button class="btn" data-act="paywall" data-reason="stats">${STORE_CONFIG.trial}無料で試す</button>
+      </div>`;
+    const notes = Store.notes;
+    if (!notes.length) return head + empty('記録をつけると、ここに統計が表示されます', '<button class="btn" data-act="new-note">味を記録</button>');
+
+    const now = new Date();
+    const thisMonth = notes.filter(n => { const d = new Date(n.date); return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth(); }).length;
+    const names = new Set(notes.map(n => normalize(noteName(n))).filter(Boolean));
+
+    // 月ごとの杯数（直近6か月）
+    const months = Array.from({ length: 6 }, (_, i) => new Date(now.getFullYear(), now.getMonth() - 5 + i, 1));
+    const perMonth = months.map(m => notes.filter(n => { const d = new Date(n.date); return d.getFullYear() === m.getFullYear() && d.getMonth() === m.getMonth(); }));
+    const maxMonth = Math.max(1, ...perMonth.map(a => a.length));
+
+    // よく飲む紅茶（上位5つ）
+    const byTea = {};
+    notes.forEach(n => {
+      const name = noteName(n) || '（名前なし）';
+      (byTea[name] = byTea[name] || []).push(n.rating);
+    });
+    const topTeas = Object.entries(byTea).sort((a, b) => b[1].length - a[1].length || avgOf(b[1]) - avgOf(a[1])).slice(0, 5);
+
+    // 好きな味、飲み方
+    const tags = tagRank(notes).slice(0, 6);
+    const styles = {};
+    notes.forEach(n => { const s = n.style || 'ストレート'; styles[s] = (styles[s] || 0) + 1; });
+    const styleList = Object.entries(styles).sort((a, b) => b[1] - a[1]);
+
+    // 好みの変化：直近3か月と、それより前の好きな味を比べる
+    const cut = new Date(now.getFullYear(), now.getMonth() - 2, 1).getTime();
+    const recentTags = tagRank(notes.filter(n => n.date >= cut)).slice(0, 3).map(([t]) => t);
+    const olderTags = tagRank(notes.filter(n => n.date < cut)).slice(0, 3).map(([t]) => t);
+
+    const pros = notes.filter(n => n.mode === 'pro' && n.pro);
+    const best = pros.length ? pros.reduce((a, b) => (b.pro.score > a.pro.score ? b : a)) : null;
+
+    return `
+      ${head}
+      <div class="stat-grid">
+        <div class="stat"><b>${notes.length}</b><span>これまでの杯数</span></div>
+        <div class="stat"><b>${thisMonth}</b><span>今月の杯数</span></div>
+        <div class="stat"><b>${names.size}</b><span>飲んだ紅茶の種類</span></div>
+        <div class="stat"><b>${avgOf(notes.map(n => n.rating)).toFixed(1)}</b><span>平均の★</span></div>
+      </div>
+
+      <div class="card">
+        <h3>月ごとの杯数</h3>
+        <div class="mbars">${months.map((m, i) => {
+          const list = perMonth[i];
+          return `<div class="mbar"><b>${list.length || ''}</b>
+            <span class="mbar-col"><span style="height:${Math.round(list.length / maxMonth * 100)}%"></span></span>
+            <em>${m.getMonth() + 1}月</em><small>${list.length ? '★' + avgOf(list.map(n => n.rating)).toFixed(1) : ''}</small></div>`;
+        }).join('')}</div>
+      </div>
+
+      <div class="card">
+        <h3>よく飲む紅茶</h3>
+        ${topTeas.map(([name, r]) => hbar(esc(name), r.length, topTeas[0][1].length, `${r.length}杯・★${avgOf(r).toFixed(1)}`)).join('')}
+      </div>
+
+      <div class="card">
+        <h3>好きな味</h3>
+        ${tags.length ? tags.map(([t, c]) => hbar(esc(t), c, tags[0][1], `${c}回`)).join('') + '<p class="hint">★4以上の記録で、よく選んだ味です。</p>'
+          : '<p class="muted">★4以上の記録に味のタグを付けると表示されます。</p>'}
+        ${recentTags.length && olderTags.length ? `
+          <div class="trend">
+            <p><b class="trend-label">以前</b>${chips(olderTags)}</p>
+            <p><b class="trend-label">最近3か月</b>${chips(recentTags, 'accent')}</p>
+          </div>` : ''}
+      </div>
+
+      <div class="card">
+        <h3>飲み方</h3>
+        ${styleList.map(([s, c]) => hbar(esc(s), c, notes.length, `${Math.round(c / notes.length * 100)}%`)).join('')}
+      </div>
+
+      ${pros.length ? `
+        <div class="card">
+          <h3>プロの記録</h3>
+          <div class="kv">
+            <span>記録の数</span><b>${pros.length}件</b>
+            <span>平均点</span><b>${avgOf(pros.map(n => n.pro.score)).toFixed(1)}点</b>
+            <span>最高点</span><b>${best.pro.score}点（${esc(noteName(best) || '名前なし')}）</b>
+          </div>
+        </div>` : ''}
+    `;
+  }
+
   // ---------- 茶葉・在庫 ----------
   function viewTeas() {
     const teas = [...Store.teas].sort((a, b) => (isLow(b) - isLow(a)) || a.name.localeCompare(b.name, 'ja'));
@@ -820,6 +950,7 @@
         <div class="row gap">
           <button class="btn small ghost" data-act="stock-use" data-id="${t.id}">−1杯分</button>
           <button class="btn small ghost" data-act="stock-add" data-id="${t.id}">補充する</button>
+          ${buyBtn([t.brand, t.name].filter(Boolean).join(' '), '買い足す')}
         </div>
         ${t.lowAt ? `<p class="muted">${esc(t.lowAt)}${esc(t.unit)}以下で「残りわずか」表示</p>` : ''}
       </div>
@@ -843,6 +974,7 @@
         <button class="btn ghost danger" data-act="delete-tea" data-id="${t.id}">削除</button>
         <button class="btn ghost" data-act="edit-tea" data-id="${t.id}">編集</button>
       </div>
+      ${prNote()}
     `;
   }
 
@@ -949,6 +1081,15 @@
           <p class="muted">${esc(g.lead)}</p>
         </article>`).join('')}</div>
       <button class="btn ghost wide" data-act="show-onboarding">アプリの使い方をもう一度見る</button>
+      ${Platform.store ? `
+        <div class="card pro-plan">
+          <div class="row between">
+            <div><p class="eyebrow">TEA NOTE PRO</p><h3>紅茶ノート Pro</h3>
+              <p class="muted">${Pro.active ? '利用中です' : `${STORE_CONFIG.trial}無料・その後${Pro.price}`}</p></div>
+            <button class="btn small" data-act="paywall">${Pro.active ? '管理' : '詳しく見る'}</button>
+          </div>
+        </div>
+        <button class="linklike" data-act="open-url" data-url="${esc(STORE_CONFIG.privacyUrl)}">プライバシーポリシー</button>` : ''}
     `;
   }
 
@@ -969,6 +1110,66 @@
       ${related.length ? `<h2 class="sec">このガイドに合う茶葉</h2><div class="stack">${related.map(c => `
         <article class="card"><h3>${esc(c.name)}</h3><p>${esc(c.desc)}</p><div class="chips">${chips(c.tags)}</div></article>`).join('')}</div>` : ''}
     `;
+  }
+
+  // ---------- 紅茶ノート Pro の案内 ----------
+  // 記録の入力中にも開けるように、シートとは別の層に重ねて表示する
+  const PRO_FEATURES = [
+    ['プロのテイスティング記録', '水色・香り・品質を100点満点で採点し、レーダーチャートで比べられます'],
+    [`写真を${MAX_PHOTOS}枚まで`, `1つの記録に写真を${MAX_PHOTOS}枚まで付けられます（無料は${FREE_PHOTOS}枚）`],
+    ['統計', '月ごとの杯数、よく飲む紅茶、好きな味とその変化をグラフで見られます'],
+  ];
+  const PAYWALL_REASONS = {
+    'pro-note': 'プロの記録は Pro の機能です',
+    photos: `写真を${FREE_PHOTOS + 1}枚以上付けるには Pro が必要です`,
+    stats: '統計は Pro の機能です',
+  };
+  let paywallThen = null; // Pro になったあとに続ける操作
+
+  function openPaywall(reason, then) {
+    closePaywall();
+    paywallThen = then || null;
+    const el = document.createElement('div');
+    el.id = 'paywall';
+    el.className = 'paywall';
+    el.innerHTML = `
+      <div class="sheet-backdrop" data-act="paywall-close"></div>
+      <div class="sheet" role="dialog" aria-modal="true" aria-label="紅茶ノート Pro">
+        <div class="sheet-head"><span></span><button class="icon-btn" data-act="paywall-close" aria-label="閉じる">×</button></div>
+        <div class="pw-hero">
+          <span class="pw-cup">${ICONS.cup}</span>
+          <p class="eyebrow">TEA NOTE PRO</p>
+          <h2>紅茶ノート Pro</h2>
+          ${PAYWALL_REASONS[reason] ? `<p class="pw-reason">${PAYWALL_REASONS[reason]}</p>` : ''}
+        </div>
+        <ul class="pw-list">${PRO_FEATURES.map(([t, d]) => `<li>${ICONS.check}<div><b>${esc(t)}</b><span>${esc(d)}</span></div></li>`).join('')}</ul>
+        ${Pro.active ? `
+          <p class="pw-on">Pro を利用中です。ありがとうございます。</p>
+          <button class="btn ghost wide" data-act="pro-manage">定期購入の管理・解約</button>` : `
+          <button class="btn ghost wide" data-act="pro-restore">購入済みの方はこちら（復元）</button>`}
+        <button class="linklike" data-act="open-url" data-url="${esc(STORE_CONFIG.privacyUrl)}">プライバシーポリシー</button>
+        ${Pro.active ? '' : `
+          <div class="pw-cta">
+            <button class="btn big wide" data-act="pro-buy">${STORE_CONFIG.trial}無料で試す</button>
+            <p class="pw-terms">無料期間のあとは${esc(Pro.price)}（自動更新）。無料期間中に解約すれば、料金はかかりません。解約は Google Play の「定期購入」からいつでもできます。</p>
+          </div>`}
+      </div>`;
+    document.body.appendChild(el);
+    document.body.classList.add('locked');
+  }
+  function closePaywall() {
+    const el = $('#paywall');
+    paywallThen = null;
+    if (!el) return;
+    el.remove();
+    if (!$('#sheet-root').childElementCount) document.body.classList.remove('locked');
+  }
+  function unlocked(msg) {
+    const then = paywallThen;
+    closePaywall();
+    toast(msg);
+    render();
+    if (then) then();
   }
 
   // ---------- シート・トースト ----------
@@ -1063,10 +1264,33 @@
     },
     'note-mode': el => {
       const form = $('#note-form');
-      form.dataset.mode = el.dataset.mode;
-      $$('[data-act="note-mode"]', form).forEach(b => b.setAttribute('aria-selected', String(b === el)));
+      const apply = () => {
+        form.dataset.mode = el.dataset.mode;
+        $$('[data-act="note-mode"]', form).forEach(b => b.setAttribute('aria-selected', String(b === el)));
+        const tag = $('.pro-tag', el);
+        if (tag) tag.remove();
+      };
+      if (el.dataset.mode === 'pro' && !Pro.active && !form.dataset.wasPro) openPaywall('pro-note', apply);
+      else apply();
     },
     'sheet-close': () => closeSheet(),
+    'paywall': el => openPaywall(el.dataset.reason),
+    'paywall-close': () => closePaywall(),
+    'pro-buy': async el => {
+      el.disabled = true;
+      try {
+        if (await Pro.purchase()) unlocked('Pro を始めました');
+      } catch (e) { toast(e.message); } finally { el.disabled = false; }
+    },
+    'pro-restore': async el => {
+      el.disabled = true;
+      try {
+        if (await Pro.restore()) unlocked('Pro を戻しました');
+        else toast('購入済みの Pro が見つかりませんでした');
+      } catch (e) { toast(e.message); } finally { el.disabled = false; }
+    },
+    'pro-manage': () => Pro.manage(),
+    'open-url': el => Platform.openExternal(el.dataset.url),
     'show-onboarding': () => window.showOnboarding && window.showOnboarding(),
     'news-filter': el => { newsFilter = el.dataset.q; render(); },
     'news-retry': () => { newsState = 'idle'; render(); },
@@ -1148,7 +1372,12 @@
   });
 
   $('#mini-timer').addEventListener('click', () => go('timer'));
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if ($('#paywall')) closePaywall(); else closeSheet();
+  });
+  // Pro の状態が変わったら（購入・解約・ストアでの確認）表示を更新する
+  Pro.subscribe(() => render());
 
   Timer.subscribe(() => {
     if (parseHash().name === 'timer') render(); else updateMiniTimer();
@@ -1156,6 +1385,6 @@
   });
   setInterval(() => { updateTimerDisplay(); updateMiniTimer(); }, 250);
 
-  window.addEventListener('hashchange', () => { closeSheet(); render(); });
+  window.addEventListener('hashchange', () => { closePaywall(); closeSheet(); render(); });
   render();
 })();

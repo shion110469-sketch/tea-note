@@ -3,7 +3,8 @@
 // 戻ったときに新しい版を確認し、切り替わったら読み込み直す。
 
 (() => {
-  if (!('serviceWorker' in navigator) || location.protocol === 'file:') return;
+  // アプリ版（Android）は中身をアプリに同梱しているので、Service Worker は使わない（更新はストアから）
+  if (!('serviceWorker' in navigator) || location.protocol === 'file:' || Platform.native) return;
 
   const hadController = !!navigator.serviceWorker.controller; // 初回インストール時は読み込み直さない
   let reloading = false;
@@ -19,6 +20,7 @@
     const t = typeof Timer !== 'undefined' ? Timer.state : {};
     return t.running || t.done
       || document.getElementById('sheet-root').childElementCount > 0
+      || !!document.getElementById('paywall')
       || !document.getElementById('onboarding').hidden;
   }
 
