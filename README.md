@@ -47,6 +47,15 @@ Google Play で公開するための版。中身は Web 版と同じファイル
 - Pro の状態と購入は [js/pro.js](js/pro.js)。Google Play の定期購入を RevenueCat で確認し、最後の状態を覚えてオフラインでも使えるようにする。Pro をやめても、プロで記録済みのものは見る・編集できる
 - ブラウザでの確認：`http://localhost:8080/?store` で開くとストア版として動く（購入・復元・解約は確認ダイアログで試せる）
 - プライバシーポリシー：[privacy.html](privacy.html)（https://shion110469-sketch.github.io/tea-note/privacy.html）
+- タイマー：アプリ版は終わる時刻に通知（音・バイブ）を予約するので、画面を閉じていても知らせる（[js/timer.js](js/timer.js) の `NativeAlarm`）
+
+### Android アプリの組み立て
+- 必要なもの：Node.js、Java 21（Microsoft OpenJDK 21）、Android Studio（Android SDK）。Android Studio 付属の Java は新しすぎて使えない
+- 組み立て：`powershell -ExecutionPolicy Bypass -File scripts\build-android.ps1`（`-Release` で Google Play 用の AAB）
+  - フォルダー名に日本語があると組み立てツールが動かないため、スクリプトが `T:` ドライブを割り当ててから組み立てる
+  - Web 版のファイルを `www/` にまとめ、プラグイン（[scripts/native-entry.js](scripts/native-entry.js)）を `www/js/native.js` に1つにまとめてから Android プロジェクト（`android/`）に反映する
+- エミュレーターに入れる：`adb install -r T:\android\app\build\outputs\apk\debug\app-debug.apk`
+- アプリ ID：`jp.teanote.app`
 
 ## スマホで使う
 1. スマホのブラウザで https://shion110469-sketch.github.io/tea-note/ を開く
