@@ -132,16 +132,25 @@
     </svg>`;
   }
 
+  // 抽出条件を「98℃・3g・160ml・3:20」の形にする（記録していない項目は省く）
+  function brewText(n) {
+    const b = n.brew || (n.pro && n.pro.brew) || {};
+    const tea = n.teaId && Store.tea(n.teaId);
+    const unit = (tea && tea.unit) || 'g';
+    return [b.temp != null && `${b.temp}℃`, b.amount != null && `${b.amount}${unit}`, b.water != null && `${b.water}ml`, b.seconds && fmtTime(b.seconds * 1000)]
+      .filter(Boolean).join('・');
+  }
+
   function proSummary(n) {
-    const p = n.pro, b = p.brew || {};
-    const brewText = [b.temp != null && `${b.temp}℃`, b.amount != null && `${b.amount}g`, b.water != null && `${b.water}ml`, b.seconds && fmtTime(b.seconds * 1000)].filter(Boolean).join('・');
+    const p = n.pro;
+    const brew = brewText(n);
     return `
         <div class="pro-sum">
           ${radar(p.quality || {})}
           <div class="pro-facts">
             ${p.liquor ? `<p><span class="swatch" style="background:${liquorHex(p.liquor)}"></span>水色：${esc(p.liquor)}${p.clarity ? `（${esc(p.clarity)}）` : ''}</p>` : ''}
             ${p.leafColor ? `<p>茶殻：${esc(p.leafColor)}</p>` : ''}
-            ${brewText ? `<p>抽出：${brewText}</p>` : ''}
+            ${brew ? `<p>抽出：${brew}</p>` : ''}
             ${p.aromaNotes && p.aromaNotes.length ? `<div class="chips">${chips(p.aromaNotes.slice(0, 5))}</div>` : ''}
           </div>
         </div>`;
@@ -169,6 +178,7 @@
           <span class="stars">${stars(n.rating)}</span>
         </div>
         <p class="muted">${fmtDate(n.date)}・${esc(n.style || 'ストレート')}</p>
+        ${brewText(n) ? `<p class="muted">抽出：${brewText(n)}</p>` : ''}
         ${photos.length ? `<div class="thumbs">${photos.map(id => `
           <button type="button" class="thumb" data-act="view-photo" data-photo-id="${esc(id)}" aria-label="写真を大きく見る"><img data-photo="${esc(id)}" alt=""></button>`).join('')}</div>` : ''}
         ${n.tags && n.tags.length ? `<div class="chips">${chips(n.tags)}</div>` : ''}
@@ -507,9 +517,9 @@
     try { lastMode = localStorage.getItem('teanote.noteMode') || 'normal'; } catch (e) { /* 既定はノーマル */ }
     const mode = isNew ? lastMode : (n.mode || 'normal');
 
-    // プロの初期値（抽出条件は、タイマーから記録したときの条件→茶葉の淹れ方の順に使う）
+    // 抽出条件の初期値：記録済みの条件 → タイマーから記録したときの条件 → 茶葉の淹れ方
     const P = n.pro || {};
-    const brew = P.brew || n.brew || (linked && linked.brew) || {};
+    const brew = n.brew || P.brew || (linked && linked.brew) || {};
     const q = { appearance: 7, liquor: 7, aroma: 7, taste: 7, finish: 7, ...(P.quality || {}) };
     const prof = { astringency: 3, bitterness: 2, sweetness: 3, body: 3, acidity: 2, aromaStrength: 3, ...(P.profile || {}) };
     const pickOne = (name, items, current, render) => `
@@ -519,17 +529,20 @@
       }).join('')}<input type="hidden" name="${name}" value="${esc(current || '')}"></div>`;
     const proNum = (name, label, val, unit, step = 1) => `
       <label class="field"><span>${label}</span><span class="pin"><input type="number" inputmode="decimal" min="0" step="${step}" name="${name}" value="${esc(val ?? '')}"><em>${unit}</em></span></label>`;
-    const proForm = `
+    // 抽出条件（ノーマル・プロ共通）。蒸らしは選ぶまで空欄扱い
+    const brewForm = `
         <section class="pro-sec">
           <h4>抽出条件</h4>
           <div class="grid4">
             ${proNum('p_temp', '温度', brew.temp, '℃')}
-            ${proNum('p_amount', '茶葉', brew.amount, 'g', 0.5)}
+            ${proNum('p_amount', '茶葉', brew.amount, esc((linked && linked.unit) || 'g'), 0.5)}
             ${proNum('p_water', 'お湯', brew.water, 'ml', 10)}
             <div class="field"><span>蒸らし</span><span class="pin">${mmssPicker(brew.seconds || 180, 'data-field="p_seconds"')}</span>
-              <input type="hidden" name="p_seconds" value="${esc(brew.seconds || 180)}"></div>
+              <input type="hidden" name="p_seconds" value="${esc(brew.seconds || '')}"></div>
           </div>
-        </section>
+          <p class="hint">空欄の項目は記録しません。</p>
+        </section>`;
+    const proForm = `
         <section class="pro-sec">
           <h4>茶葉（外観）</h4>
           <label class="field"><span>グレード</span>
@@ -586,6 +599,7 @@
           </label>
           <label class="field grow"><span>日付</span><input type="date" name="date" value="${toDateInput(n.date)}"></label>
         </div>
+        ${brewForm}
         <div class="normal-only form">
           <div class="field"><span>感じた味・香り</span>
             <div class="chips pick" id="normal-tags">${TAGS.map(t => `<button type="button" class="chip ${n.tags.includes(t) ? 'on' : ''}" data-act="toggle-chip" data-v="${esc(t)}">${esc(t)}</button>`).join('')}</div>
@@ -609,7 +623,7 @@
     const sel = form.elements.teaId;
     if (sel) sel.addEventListener('change', () => {
       $('#tea-name-field').hidden = sel.value !== '__other';
-      // プロの抽出条件が空なら、選んだ茶葉の淹れ方で埋める
+      // 抽出条件が空なら、選んだ茶葉の淹れ方で埋める
       const t = Store.tea(sel.value);
       const els = ['p_temp', 'p_amount', 'p_water'].map(k => form.elements[k]);
       if (t && t.brew && els.every(el => el.value === '')) {
@@ -693,10 +707,12 @@
         date: form.elements.date.value ? new Date(form.elements.date.value + 'T12:00:00').getTime() : Date.now(),
         memo: form.elements.memo.value.trim(),
       };
+      // 抽出条件（ノーマル・プロ共通）
+      const num = k => (form.elements[k].value === '' ? null : Number(form.elements[k].value));
+      common.brew = { temp: num('p_temp'), amount: num('p_amount'), water: num('p_water'), seconds: num('p_seconds') };
       if (mode === 'pro') {
-        const num = k => (form.elements[k].value === '' ? null : Number(form.elements[k].value));
         const pro = {
-          brew: { temp: num('p_temp'), amount: num('p_amount'), water: num('p_water'), seconds: num('p_seconds') },
+          brew: common.brew,
           grade: form.elements.p_grade.value,
           liquor: form.elements.p_liquor.value,
           clarity: form.elements.p_clarity.value,
