@@ -36,6 +36,7 @@ const Timer = (() => {
     s.endAt = Date.now() + (s.remaining ?? duration());
     s.remaining = null;
     s.running = true;
+    NativeAlarm.schedule(s.endAt, s.cfg.label);
     emit();
   }
 
@@ -43,11 +44,13 @@ const Timer = (() => {
     if (!s.running) return;
     s.remaining = Math.max(0, s.endAt - Date.now());
     s.running = false;
+    NativeAlarm.cancel();
     emit();
   }
 
   function reset() {
     Chime.stop();
+    NativeAlarm.cancel();
     s.running = false;
     s.remaining = null;
     s.done = false;
@@ -61,8 +64,11 @@ const Timer = (() => {
   }
 
   function alarm() {
+    // アプリ版で、画面を閉じている間に時間が過ぎていた場合は、通知で知らせ済みなのでチャイムは鳴らさない
+    if (NativeAlarm.available() && Date.now() - s.endAt > 3000) return;
+    NativeAlarm.dismiss(); // アプリを見ているときは、予約した通知は出さない
     Chime.play();
-    if (navigator.vibrate) navigator.vibrate([400, 150, 400, 150, 400]); // Android のみ（iPhone の Web アプリは振動できない）
+    if (!NativeAlarm.vibrate() && navigator.vibrate) navigator.vibrate([400, 150, 400, 150, 400]); // Android のみ（iPhone の Web アプリは振動できない）
     if (document.hidden && 'Notification' in window && Notification.permission === 'granted') {
       try { new Notification('お茶が入りました', { body: s.cfg ? s.cfg.label : '' }); } catch (e) { /* 一部環境では使えない */ }
     }
@@ -82,6 +88,60 @@ const Timer = (() => {
     state: s, duration, left, setup, update, start, pause, reset,
     markConsumed() { s.consumed = true; },
     subscribe: f => subs.add(f),
+  };
+})();
+
+// アプリ版（Android）だけ：画面を閉じていても、終わる時刻に通知（音・バイブつき）が出るように予約する
+const NativeAlarm = (() => {
+  const ID = 1, CHANNEL = 'timer';
+  const ln = () => (typeof Platform !== 'undefined' ? Platform.plugin('LocalNotifications') : null);
+  const haptics = () => (typeof Platform !== 'undefined' ? Platform.plugin('Haptics') : null);
+  let ready = null;
+
+  // 通知の許可と、音・バイブありの通知チャンネルを用意する（最初の1回だけ）
+  function prepare() {
+    const p = ln();
+    if (!p) return Promise.resolve(false);
+    if (!ready) {
+      ready = (async () => {
+        let perm = await p.checkPermissions();
+        if (perm.display !== 'granted') perm = await p.requestPermissions();
+        if (perm.display !== 'granted') return false;
+        await p.createChannel({ id: CHANNEL, name: 'タイマー', description: '蒸らし時間の終わりのお知らせ', importance: 5, vibration: true, visibility: 1 });
+        return true;
+      })().catch(() => false);
+      ready.then(ok => { if (!ok) ready = null; }); // 許可されなかったときは、次のスタートでもう一度聞く
+    }
+    return ready;
+  }
+
+  return {
+    available: () => !!ln(),
+    async schedule(at, label) {
+      const p = ln();
+      if (!p || !(await prepare())) return;
+      try {
+        await p.cancel({ notifications: [{ id: ID }] });
+        await p.schedule({ notifications: [{
+          id: ID, title: 'お茶が入りました', body: label || '', channelId: CHANNEL,
+          schedule: { at: new Date(at), allowWhileIdle: true },
+        }] });
+      } catch (e) { /* 通知を予約できなくても、アプリを開いていればチャイムで知らせる */ }
+    },
+    cancel() { const p = ln(); if (p) p.cancel({ notifications: [{ id: ID }] }).catch(() => {}); },
+    dismiss() {
+      const p = ln();
+      if (!p) return;
+      p.cancel({ notifications: [{ id: ID }] }).catch(() => {});
+      p.removeDeliveredNotifications({ notifications: [{ id: ID, title: '', body: '' }] }).catch(() => {});
+    },
+    // バイブを鳴らせたら true
+    vibrate() {
+      const h = haptics();
+      if (!h) return false;
+      [0, 700, 1400].forEach(ms => setTimeout(() => h.vibrate({ duration: 450 }).catch(() => {}), ms));
+      return true;
+    },
   };
 })();
 

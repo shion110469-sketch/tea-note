@@ -1,0 +1,8 @@
+{
+  "appId": "jp.teanote.app",
+  "appName": "紅茶ノート",
+  "webDir": "www",
+  "android": {
+    "backgroundColor": "#2B1E18"
+  }
+}

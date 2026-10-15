@@ -25,7 +25,8 @@ const Platform = (() => {
     store,
     news: !store || !!STORE_CONFIG.newsUrl,
     newsUrl: store ? STORE_CONFIG.newsUrl : 'news.json',
-    plugin: name => (native && cap.Plugins ? cap.Plugins[name] || null : null),
+    // プラグインは、アプリ版だけで読み込む js/native.js（scripts/native-entry.js から作る）が用意する
+    plugin: name => (native && window.NativePlugins ? window.NativePlugins[name] || null : null),
     // 外部のサイトを開く（アプリ版はスマホのブラウザで開く）
     openExternal(url) {
       const browser = this.plugin('Browser');

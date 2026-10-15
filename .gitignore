@@ -1,0 +1,15 @@
+# Android アプリ（Capacitor）の作業用ファイル
+node_modules/
+www/
+android/app/build/
+android/build/
+android/.gradle/
+android/.idea/
+android/local.properties
+android/app/release/
+*.iml
+
+# アプリの署名鍵（絶対に公開しない）
+*.jks
+*.keystore
+keystore.properties

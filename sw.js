@@ -1,6 +1,6 @@
 // オフラインでも開けるように、アプリ本体をキャッシュする
 // ファイルを更新したら VERSION を上げると、利用者の端末に新しい版が届く
-const VERSION = 'v22';
+const VERSION = 'v23';
 const CACHE = `tea-note-${VERSION}`;
 const APP_SHELL = [
   './',
