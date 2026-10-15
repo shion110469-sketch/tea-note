@@ -64,8 +64,9 @@ const Timer = (() => {
   }
 
   function alarm() {
-    // アプリ版で、画面を閉じている間に時間が過ぎていた場合は、通知で知らせ済みなのでチャイムは鳴らさない
-    if (NativeAlarm.available() && Date.now() - s.endAt > 3000) return;
+    // アプリ版で、アプリを見ていない（裏に回っている）とき、または見ていない間に時間が過ぎていたときは、
+    // 予約した通知で知らせるので、チャイムを鳴らしたり通知を消したりしない
+    if (NativeAlarm.available() && (document.hidden || Date.now() - s.endAt > 3000)) return;
     NativeAlarm.dismiss(); // アプリを見ているときは、予約した通知は出さない
     Chime.play();
     if (!NativeAlarm.vibrate() && navigator.vibrate) navigator.vibrate([400, 150, 400, 150, 400]); // Android のみ（iPhone の Web アプリは振動できない）
@@ -103,13 +104,15 @@ const NativeAlarm = (() => {
     const p = ln();
     if (!p) return Promise.resolve(false);
     if (!ready) {
-      ready = (async () => {
+      const ask = (async () => {
         let perm = await p.checkPermissions();
         if (perm.display !== 'granted') perm = await p.requestPermissions();
         if (perm.display !== 'granted') return false;
         await p.createChannel({ id: CHANNEL, name: 'タイマー', description: '蒸らし時間の終わりのお知らせ', importance: 5, vibration: true, visibility: 1 });
         return true;
       })().catch(() => false);
+      // 許可の確認が出ないまま返事が来ないことがあるので、待ち続けないようにする
+      ready = Promise.race([ask, new Promise(r => setTimeout(() => r(false), 20000))]);
       ready.then(ok => { if (!ok) ready = null; }); // 許可されなかったときは、次のスタートでもう一度聞く
     }
     return ready;
