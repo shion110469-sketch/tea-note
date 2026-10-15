@@ -99,6 +99,15 @@
 
   const noteName = n => { const tea = n.teaId && Store.tea(n.teaId); return tea ? tea.name : n.teaName || ''; };
 
+  // 評価トップ3の順位付け用の点数：プロは総合点、ノーマルは★をおおよその点数に置き換える
+  const STAR_POINTS = { 5: 95, 4: 82, 3: 67, 2: 50, 1: 20 };
+  const notePoints = n => (n.mode === 'pro' && n.pro ? n.pro.score : STAR_POINTS[n.rating] || 0);
+
+  // ホームの記録欄の表示（最近／トップ3）を覚えておく
+  function getHomeNotesMode() {
+    try { return localStorage.getItem('teanote.homeNotes') === 'top' ? 'top' : 'recent'; } catch (e) { return 'recent'; }
+  }
+
   // ---------- プロのテイスティング評価 ----------
   const readQuality = form => Object.fromEntries(PRO.quality.map(([k]) => [k, Number(form.elements['q_' + k].value)]));
   const proScore = q => PRO.quality.reduce((s, [k]) => s + Number(q[k] || 0), 0) * 2; // 50点満点 → 100点満点
@@ -191,7 +200,10 @@
     const low = Store.teas.filter(t => isLow(t) || (t.stock !== '' && Number(t.stock) <= 0));
     const stockRecs = Recommend.fromStock(3);
     const discover = Recommend.discover(3);
-    const recent = [...Store.notes].sort((a, b) => b.date - a.date).slice(0, 3);
+    const homeNotes = getHomeNotesMode();
+    const picked = homeNotes === 'top'
+      ? [...Store.notes].sort((a, b) => notePoints(b) - notePoints(a) || b.date - a.date).slice(0, 3)
+      : [...Store.notes].sort((a, b) => b.date - a.date).slice(0, 3);
     const d = new Date(), h = d.getHours();
     const greet = h < 4 ? 'こんばんは' : h < 11 ? 'おはようございます' : h < 17 ? 'こんにちは' : 'こんばんは';
     const week = '日月火水木金土'[d.getDay()];
@@ -231,9 +243,18 @@
           </div>
         </article>`).join('')}</div>
 
-      <h2 class="sec">最近の記録</h2>
-      ${recent.length ? `<div class="stack">${recent.map(noteCard).join('')}</div>`
-        : empty('飲んだ紅茶の感想を記録すると、好みに合わせた提案が届きます', '<button class="btn" data-act="new-note">最初の記録をつける</button>')}
+      <div class="row between sec-row">
+        <h2 class="sec">${homeNotes === 'top' ? '評価トップ3' : '最近の記録'}</h2>
+        <div class="seg seg-sm" role="tablist" aria-label="記録の表示">
+          <button type="button" role="tab" data-act="home-notes" data-v="recent" aria-selected="${homeNotes !== 'top'}">最近</button>
+          <button type="button" role="tab" data-act="home-notes" data-v="top" aria-selected="${homeNotes === 'top'}">トップ3</button>
+        </div>
+      </div>
+      ${!picked.length
+        ? empty('飲んだ紅茶の感想を記録すると、好みに合わせた提案が届きます', '<button class="btn" data-act="new-note">最初の記録をつける</button>')
+        : homeNotes === 'top'
+          ? `<div class="stack">${picked.map((n, i) => `<div class="ranked"><span class="rank rank-${i + 1}" aria-label="${i + 1}位">${i + 1}</span>${noteCard(n)}</div>`).join('')}</div>`
+          : `<div class="stack">${picked.map(noteCard).join('')}</div>`}
     `;
   }
 
@@ -1035,6 +1056,10 @@
       $$('.chip', box).forEach(c => c.classList.remove('on'));
       el.classList.toggle('on', on);
       box.querySelector('input[type=hidden]').value = on ? el.dataset.v : '';
+    },
+    'home-notes': el => {
+      try { localStorage.setItem('teanote.homeNotes', el.dataset.v); } catch (e) { /* 覚えられなくても表示は切り替える */ }
+      render();
     },
     'note-mode': el => {
       const form = $('#note-form');
