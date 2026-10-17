@@ -357,7 +357,7 @@
         ${param('water', 'お湯', 'ml', 10)}
       </div>
 
-      <div class="ring-wrap">
+      <div class="ring-wrap ${s.done ? 'is-done' : ''}">
         <svg viewBox="0 0 240 240" class="ring" aria-hidden="true">
           <defs><linearGradient id="ring-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" class="ring-stop-1"/><stop offset="1" class="ring-stop-2"/></linearGradient></defs>
           <circle cx="120" cy="120" r="110" class="ring-bg"/>
@@ -372,24 +372,23 @@
           <p class="muted">${esc(c.temp)}℃・${esc(c.amount)}${esc(c.unit)}・${esc(c.water)}ml</p>
           ${editable ? '<p class="tap-hint">数字をタップして時間を変更</p>' : ''}
         </div>
+        ${s.done ? `
+          <div class="done-over" role="group" aria-label="お茶が入りました">
+            <p class="done-title">お茶が入りました</p>
+            ${tea && !s.consumed ? `<label class="check"><input type="checkbox" id="consume" checked>在庫から ${esc(c.amount)}${esc(c.unit)} 減らす<small>（残り ${stockText(tea)}）</small></label>` : ''}
+            <div class="done-btns">
+              <button class="btn small" data-act="done-note">味を記録する</button>
+              <button class="btn small ghost" data-act="done-close">閉じる</button>
+            </div>
+          </div>` : ''}
       </div>
 
-      <div class="timer-btns">
+      <div class="timer-btns" ${s.done ? 'hidden' : ''}>
         <button class="btn ghost" data-act="timer-reset">リセット</button>
         ${s.running
           ? '<button class="btn big" data-act="timer-pause">一時停止</button>'
-          : `<button class="btn big" data-act="timer-start" ${s.done ? 'disabled' : ''}>${s.remaining != null && !s.done ? '再開' : 'スタート'}</button>`}
+          : `<button class="btn big" data-act="timer-start">${s.remaining != null ? '再開' : 'スタート'}</button>`}
       </div>
-
-      ${s.done ? `
-        <div class="card done-panel">
-          <h3>お茶が入りました</h3>
-          ${tea && !s.consumed ? `<label class="check"><input type="checkbox" id="consume" checked> 在庫から ${esc(c.amount)}${esc(c.unit)} 減らす（現在 ${stockText(tea)}）</label>` : ''}
-          <div class="row gap">
-            <button class="btn" data-act="done-note">味を記録する</button>
-            <button class="btn ghost" data-act="done-close">閉じる</button>
-          </div>
-        </div>` : ''}
     `;
   }
 
