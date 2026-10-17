@@ -46,7 +46,7 @@ Google Play で公開するための版。中身は Web 版と同じファイル
 - 設定は [js/platform.js](js/platform.js) の `STORE_CONFIG`（RevenueCat の公開キー、Amazon のトラッキング ID、ニュースの取得元など）
 - Pro の状態と購入は [js/pro.js](js/pro.js)。Google Play の定期購入を RevenueCat で確認し、最後の状態を覚えてオフラインでも使えるようにする。Pro をやめても、プロで記録済みのものは見る・編集できる
 - ブラウザでの確認：`http://localhost:8080/?store` で開くとストア版として動く（購入・復元・解約は確認ダイアログで試せる）
-- プライバシーポリシー：[privacy.html](privacy.html)（https://shion110469-sketch.github.io/tea-note/privacy.html）
+- プライバシーポリシー：[privacy.html](privacy.html)（https://teanote-app.github.io/privacy.html）
 - タイマー：アプリ版は終わる時刻に通知（音・バイブ）を予約するので、画面を閉じていても知らせる（[js/timer.js](js/timer.js) の `NativeAlarm`）
 
 ### Android アプリの組み立て
@@ -58,7 +58,7 @@ Google Play で公開するための版。中身は Web 版と同じファイル
 - アプリ ID：`jp.teanote.app`
 
 ## スマホで使う
-1. スマホのブラウザで https://shion110469-sketch.github.io/tea-note/ を開く
+1. スマホのブラウザで https://teanote-app.github.io/ を開く
 2. ホーム画面に追加する
    - iPhone（Safari）：共有ボタン →「ホーム画面に追加」
    - Android（Chrome）：メニュー →「ホーム画面に追加」または「アプリをインストール」

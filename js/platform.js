@@ -8,7 +8,7 @@ const STORE_CONFIG = {
   entitlement: 'pro',         // RevenueCat で作る権利（Entitlement）の名前
   amazonTag: '',              // Amazonアソシエイトのトラッキング ID（例：teanote-22）
   newsUrl: '',                // 商用で使えるニュースの JSON（取得元が決まるまで空＝ニュースタブを出さない）
-  privacyUrl: 'https://shion110469-sketch.github.io/tea-note/privacy.html',
+  privacyUrl: 'https://teanote-app.github.io/privacy.html',
   manageUrl: 'https://play.google.com/store/account/subscriptions?package=jp.teanote.app',
   price: '月350円',
   trial: '1週間',
@@ -35,6 +35,18 @@ const Platform = (() => {
     },
   };
 })();
+
+// 以前の URL（shion110469-sketch.github.io/tea-note/）で開いたときは、新しい URL への引っ越しを案内する。
+// データは URL ごとに別々に保存されるので、バックアップを書き出して新しい URL で読み込んでもらう
+const NEW_HOME = 'https://teanote-app.github.io/';
+if (location.hostname === 'shion110469-sketch.github.io') {
+  const bar = document.createElement('div');
+  bar.className = 'move-bar';
+  bar.innerHTML = '<b>紅茶ノートは新しいURLに移りました</b>'
+    + '<span>「茶葉・在庫」の「データのバックアップ」で書き出してから、新しいURLで開いて読み込んでください。</span>'
+    + `<a href="${NEW_HOME}" target="_blank" rel="noopener">新しいURLを開く</a>`;
+  document.body.prepend(bar);
+}
 
 // ストア版ではニュースタブを出さない（取得元が決まるまで）
 if (!Platform.news) {
