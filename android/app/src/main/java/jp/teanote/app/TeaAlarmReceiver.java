@@ -64,7 +64,9 @@ public class TeaAlarmReceiver extends BroadcastReceiver {
             .setContentIntent(content)
             .setDeleteIntent(delete)
             .setAutoCancel(true)
-            .setSilent(true)
+            // setSilent は使わない（「静かな通知」扱いになり、画面上部のポップアップが出なくなる）。
+            // 音・バイブは通知チャンネル側で無しにしてあり、TeaAlarmSound が鳴らす
+            .setDefaults(0)
             .setTimeoutAfter(TeaAlarmSound.RING_MS)
             .build();
         nm.notify(NOTIFICATION_ID, n);
