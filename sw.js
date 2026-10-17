@@ -1,6 +1,6 @@
-// オフラインでも開けるように、アプリ本体をキャッシュする
-// ファイルを更新したら VERSION を上げると、利用者の端末に新しい版が届く
-const VERSION = 'v25';
+﻿// 繧ｪ繝輔Λ繧､繝ｳ縺ｧ繧る幕縺代ｋ繧医≧縺ｫ縲√い繝励Μ譛ｬ菴薙ｒ繧ｭ繝｣繝・す繝･縺吶ｋ
+// 繝輔ぃ繧､繝ｫ繧呈峩譁ｰ縺励◆繧・VERSION 繧剃ｸ翫￡繧九→縲∝茜逕ｨ閠・・遶ｯ譛ｫ縺ｫ譁ｰ縺励＞迚医′螻翫￥
+const VERSION = 'v26';
 const CACHE = `tea-note-${VERSION}`;
 const APP_SHELL = [
   './',
@@ -38,9 +38,9 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
-  if (new URL(req.url).origin !== self.location.origin) return; // 外部への通信はそのまま
+  if (new URL(req.url).origin !== self.location.origin) return; // 螟夜Κ縺ｸ縺ｮ騾壻ｿ｡縺ｯ縺昴・縺ｾ縺ｾ
 
-  // 「通信優先・失敗したらキャッシュ」で、オンライン時は常に最新を使う
+  // 縲碁壻ｿ｡蜆ｪ蜈医・螟ｱ謨励＠縺溘ｉ繧ｭ繝｣繝・す繝･縲阪〒縲√が繝ｳ繝ｩ繧､繝ｳ譎ゅ・蟶ｸ縺ｫ譛譁ｰ繧剃ｽｿ縺・
   e.respondWith(
     fetch(req)
       .then(res => {

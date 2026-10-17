@@ -341,10 +341,9 @@
       <label class="param"><span>${label}</span>
         <span class="pin"><input type="number" inputmode="decimal" step="${step}" min="0" data-param="${key}" value="${esc(c[key])}" ${s.running ? 'disabled' : ''}><em>${unit}</em></span>
       </label>`;
-    const timeParam = (key, label) => `
-      <div class="param param-time"><span>${label}</span>
-        <span class="pin">${mmssPicker(c[key], `data-time-param="${key}"`, s.running)}<em>分:秒</em></span>
-      </div>`;
+    // 真ん中の数字をタップして蒸らし時間を変える（止まっているときだけ）。
+    // 数字の左半分（分）と右半分（秒）に、見えない選択欄を重ねている
+    const editable = !s.running && !s.done;
 
     return `
       <div class="page-head"><h1>タイマー</h1></div>
@@ -356,7 +355,6 @@
         ${param('temp', '温度', '℃')}
         ${param('amount', '茶葉', esc(c.unit), 0.5)}
         ${param('water', 'お湯', 'ml', 10)}
-        ${timeParam('seconds', '蒸らし')}
       </div>
 
       <div class="ring-wrap">
@@ -367,8 +365,12 @@
         </svg>
         <div class="ring-center">
           <p class="ring-label">${esc(c.label)}</p>
-          <p class="digits" id="timer-digits">0:00</p>
+          <div class="digits-wrap">
+            <p class="digits" id="timer-digits">0:00</p>
+            ${editable ? `<span class="mmss-over">${mmssPicker(c.seconds, 'data-time-param="seconds"')}</span>` : ''}
+          </div>
           <p class="muted">${esc(c.temp)}℃・${esc(c.amount)}${esc(c.unit)}・${esc(c.water)}ml</p>
+          ${editable ? '<p class="tap-hint">数字をタップして時間を変更</p>' : ''}
         </div>
       </div>
 

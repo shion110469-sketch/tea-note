@@ -267,7 +267,7 @@ a { color: inherit; text-decoration: none; }
 .stock-num { font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
 
 /* ---------- タイマー ---------- */
-.params { display: grid; grid-template-columns: 1fr 1fr 1fr 1.5fr; gap: 8px; }
+.params { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .mmss { display: flex; align-items: center; justify-content: center; gap: 1px; width: 100%; }
 .mmss b { font-weight: 700; color: var(--ink); }
 .pin .mmss select { width: auto; flex: 0 1 auto; padding: 4px 3px !important; text-align: center; text-align-last: center; font-weight: 700; font-size: 16px; color: var(--ink); }
@@ -286,6 +286,15 @@ a { color: inherit; text-decoration: none; }
 .ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
 .ring-label { max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; font-weight: 700; color: var(--accent); letter-spacing: .05em; }
 .digits { font-size: 58px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; letter-spacing: .02em; }
+/* 真ん中の数字をタップして時間を変える：数字の左（分）と右（秒）に、見えない選択欄を重ねる */
+.digits-wrap { position: relative; }
+.mmss-over { position: absolute; inset: -6px -10px; }
+.mmss-over .mmss { height: 100%; gap: 0; }
+.mmss-over select { flex: 2; height: 100%; min-width: 0; padding: 0; border: 0; opacity: 0; cursor: pointer; font-size: 16px; }
+.mmss-over select + b + select { flex: 3; } /* 「3:30」の「:」のあたりで分と秒を分ける */
+.mmss-over b { display: none; }
+.digits-wrap:has(select:focus-visible) .digits { text-decoration: underline; text-underline-offset: 6px; }
+.tap-hint { font-size: 11px; color: var(--muted); }
 .timer-btns { display: flex; align-items: center; justify-content: center; gap: 10px; }
 
 /* ---------- フォーム ---------- */
