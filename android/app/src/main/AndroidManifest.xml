@@ -24,6 +24,9 @@
 
         </activity>
 
+        <!-- タイマーのアラーム（TeaAlarmPlugin が予約し、時刻になったら通知を出す） -->
+        <receiver android:name=".TeaAlarmReceiver" android:exported="false" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

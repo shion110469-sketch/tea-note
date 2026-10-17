@@ -64,16 +64,25 @@ const Timer = (() => {
   }
 
   function alarm() {
-    // アプリ版で、アプリを見ていない（裏に回っている）とき、または見ていない間に時間が過ぎていたときは、
-    // 予約した通知で知らせるので、チャイムを鳴らしたり通知を消したりしない
-    if (NativeAlarm.available() && (document.hidden || Date.now() - s.endAt > 3000)) return;
-    NativeAlarm.dismiss(); // アプリを見ているときは、予約した通知は出さない
+    if (NativeAlarm.available()) {
+      // アプリ版：アプリを見ていない（裏に回っている）とき、または見ていない間に時間が過ぎていたときは、
+      // 予約した通知とアラーム音で知らせ済みなので何もしない
+      if (document.hidden || Date.now() - s.endAt > 3000) return;
+      // アプリを見ているときは、通知は出さずに同じアラーム音（とバイブ）をすぐ鳴らす。サイレントでも鳴る
+      NativeAlarm.ring();
+      return;
+    }
     Chime.play();
-    if (!NativeAlarm.vibrate() && navigator.vibrate) navigator.vibrate([400, 150, 400, 150, 400]); // Android のみ（iPhone の Web アプリは振動できない）
+    if (navigator.vibrate) navigator.vibrate([400, 150, 400, 150, 400]); // Android のブラウザのみ（iPhone の Web アプリは振動できない）
     if (document.hidden && 'Notification' in window && Notification.permission === 'granted') {
       try { new Notification('お茶が入りました', { body: s.cfg ? s.cfg.label : '' }); } catch (e) { /* 一部環境では使えない */ }
     }
   }
+
+  // アプリ版：アラームが鳴っている（または鳴ったあとの）状態でアプリに戻ったら、アラームを止める
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && s.done) NativeAlarm.dismiss();
+  });
 
   setInterval(() => {
     if (s.running && Date.now() >= s.endAt) {
@@ -92,24 +101,22 @@ const Timer = (() => {
   };
 })();
 
-// アプリ版（Android）だけ：画面を閉じていても、終わる時刻に通知（音・バイブつき）が出るように予約する
+// アプリ版（Android）だけ：画面を閉じていても、終わる時刻に知らせが出るように予約する
+// 知らせは「アラーム」として鳴らすので、ミュート中でも鳴る（android/app/.../TeaAlarmPlugin.java）
 const NativeAlarm = (() => {
-  const ID = 1, CHANNEL = 'timer';
-  const ln = () => (typeof Platform !== 'undefined' ? Platform.plugin('LocalNotifications') : null);
-  const haptics = () => (typeof Platform !== 'undefined' ? Platform.plugin('Haptics') : null);
+  const plugin = name => (typeof Platform !== 'undefined' ? Platform.plugin(name) : null);
+  const alarm = () => plugin('TeaAlarm');
   let ready = null;
 
-  // 通知の許可と、音・バイブありの通知チャンネルを用意する（最初の1回だけ）
+  // 通知の許可を確かめる（Android 13 以降は、最初の1回だけ確認の画面が出る）
   function prepare() {
-    const p = ln();
-    if (!p) return Promise.resolve(false);
+    const ln = plugin('LocalNotifications');
+    if (!ln) return Promise.resolve(true);
     if (!ready) {
       const ask = (async () => {
-        let perm = await p.checkPermissions();
-        if (perm.display !== 'granted') perm = await p.requestPermissions();
-        if (perm.display !== 'granted') return false;
-        await p.createChannel({ id: CHANNEL, name: 'タイマー', description: '蒸らし時間の終わりのお知らせ', importance: 5, vibration: true, visibility: 1 });
-        return true;
+        let perm = await ln.checkPermissions();
+        if (perm.display !== 'granted') perm = await ln.requestPermissions();
+        return perm.display === 'granted';
       })().catch(() => false);
       // 許可の確認が出ないまま返事が来ないことがあるので、待ち続けないようにする
       ready = Promise.race([ask, new Promise(r => setTimeout(() => r(false), 20000))]);
@@ -119,32 +126,19 @@ const NativeAlarm = (() => {
   }
 
   return {
-    available: () => !!ln(),
+    available: () => !!alarm(),
     async schedule(at, label) {
-      const p = ln();
-      if (!p || !(await prepare())) return;
+      const a = alarm();
+      if (!a || !(await prepare())) return;
       try {
-        await p.cancel({ notifications: [{ id: ID }] });
-        await p.schedule({ notifications: [{
-          id: ID, title: 'お茶が入りました', body: label || '', channelId: CHANNEL,
-          schedule: { at: new Date(at), allowWhileIdle: true },
-        }] });
-      } catch (e) { /* 通知を予約できなくても、アプリを開いていればチャイムで知らせる */ }
+        await a.schedule({ at, title: 'お茶が入りました', body: label || '' });
+      } catch (e) { /* 予約できなくても、アプリを開いていればチャイムで知らせる */ }
     },
-    cancel() { const p = ln(); if (p) p.cancel({ notifications: [{ id: ID }] }).catch(() => {}); },
-    dismiss() {
-      const p = ln();
-      if (!p) return;
-      p.cancel({ notifications: [{ id: ID }] }).catch(() => {});
-      p.removeDeliveredNotifications({ notifications: [{ id: ID, title: '', body: '' }] }).catch(() => {});
-    },
-    // バイブを鳴らせたら true
-    vibrate() {
-      const h = haptics();
-      if (!h) return false;
-      [0, 700, 1400].forEach(ms => setTimeout(() => h.vibrate({ duration: 450 }).catch(() => {}), ms));
-      return true;
-    },
+    // アプリを見ているときに時間になった：予約を取り消して、すぐ鳴らす
+    ring() { const a = alarm(); if (a) a.ring().catch(() => {}); },
+    // 予約の取り消し（表示中の通知と、鳴っているアラーム音も止める）
+    cancel() { const a = alarm(); if (a) a.cancel().catch(() => {}); },
+    dismiss() { this.cancel(); },
   };
 })();
 
