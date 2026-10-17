@@ -1,20 +1,41 @@
 {
-  "updatedAt": "2026-10-16T18:18:10Z",
+  "updatedAt": "2026-10-17T00:15:14Z",
   "source": "Google News",
   "items": [
+    {
+      "title": "１０月１７日放送【シューイチ★セブン】１０８人に大調査！進化する！秋のアフタヌーンティーの楽しみ方（日テレTOPICS）",
+      "source": "ｄメニューニュース",
+      "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQT0pCQk5qaWY5NFo5TUIxUG1iNDhnUEdpQXhWMENHc3I3WkFlUUJvdVdEMmpsQ2NqS3g0enIxRkxIa3VYNFJUcEUyUEpSbm5HVzM5Vzd2TTQxbkRTM2l0NzVpcTdSVDI3OHZKYnAxN0lRRXVZcGczZC1HcHRscVJibTlCYWp2TzUxbEtvNXlQak9NS2ExQThZckhuQVJpd3pIVzN3ZzlETEhHTjZzYUNwMjhhaXR2SVRBSURkLWl3?oc=5",
+      "publishedAt": "2026-10-16T22:45:08Z",
+      "query": "アフタヌーンティー"
+    },
+    {
+      "title": "〈コラム 筆洗〉イランのチャイハネ（茶店）では、紅茶を頼むだけで、これでも…",
+      "source": "東京新聞",
+      "url": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE5jSEY5REpTbTJraTUwaHhOaklBeXB0ckR5MVY1NWliNUhoMThDVUZQMHhrTGVvd01lcVVhdjhwTVBOdEt6Vk9yWF82OHZ3cHFSNWJN?oc=5",
+      "publishedAt": "2026-10-16T22:02:45Z",
+      "query": "紅茶"
+    },
+    {
+      "title": "【流山市】11月3日限定！「柏 日本閣」でハープとチェロの生演奏＆秋のアフタヌーンティーが楽しめる特別イベント開催！",
+      "source": "地域ニュースサイト号外NET",
+      "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTE1QTGpxamxDX3FlNnhmMzVHdGp3V21seS1PVy1mZWhycHdBRHl2QnczSzVOR0dRNUtVYWVGdHAxUjZneXpNaXpwYkxCS0lEM2gtVE16V19SRWh0d2RfdXp2b3Rxb1NNQTM4T2tNLS1LcUxfNTdH?oc=5",
+      "publishedAt": "2026-10-16T21:50:03Z",
+      "query": "アフタヌーンティー"
+    },
+    {
+      "title": "茶を使った３種のチョコ商品化 和紅茶、抹茶、ほうじ茶 イシヤマユウエン合同会社",
+      "source": "山陽新聞",
+      "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE9JNHdMWFcwT2tTc3NoMU04eXNYeUJtN3pkUUxOaDBQdzd0Y214Qnl0ckpQajBnV1hzVlh6ODlxcl9JbUN3RkcwS3J2b0lCY25IMFlvQnpJYk9aNWEyeF9YaGxOcUJ6RUE?oc=5",
+      "publishedAt": "2026-10-16T21:16:39Z",
+      "query": "和紅茶"
+    },
     {
       "title": "【東京エディション虎ノ門・東京エディション銀座】アーティストDAICHI MIURAとのフェスティブコラボレーションを開催",
       "source": "ニコニコニュース",
       "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE5UOTc1VHRUemVNYTBHaEoyWWRpcXJpbVJEUkRSYnhwVG1ka2FoRS1hSTZ6cm5UekhJaXRMVGJhaTAtN0Zad0VER3NocVhCSGZMOU1fS09qbEpOSWVTOThPckFUcWdTUjdoaHVzeGlTOXlHTFJlMTBuRkRWNA?oc=5",
       "publishedAt": "2026-10-16T17:30:37Z",
       "query": "アフタヌーンティー"
-    },
-    {
-      "title": "“栗×ショコラ×紅茶”の濃厚トリプル競演！最上階で愉しむ、秋色アフタヌーンティー",
-      "source": "ニコニコニュース",
-      "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE1XV0VfbXV6TlBtcGpWbGJObnctTmRNcFpXOUF3RUdxbmFTQjk2VXQ3dTUzZVR3clJkY0RsQnlRWEV3aHZkZmdRbmpXUHB6WVJGdmhyR0NiM20wVFBrSDJLVkFuZDcyV1JXVFVjNGR2ZTJmdWRMYWV2QnRzQQ?oc=5",
-      "publishedAt": "2026-10-16T15:15:28Z",
-      "query": "紅茶"
     },
     {
       "title": "【都ホテル 四日市】現地移転開業35周年を記念して、地元四日市をイメージしたアフタヌーンティー『四日市』を期間限定で販売",
@@ -38,16 +59,16 @@
       "query": "アフタヌーンティー"
     },
     {
-      "title": "「グランドニッコー東京 台場」が冬のアフタヌーンティー 白銀の城をイメージ（みんなの経済新聞ネットワーク）",
-      "source": "Yahoo!ニュース",
-      "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE9ldHpPcjVvb0NsazMyOVZtRGtGblF5UDhreHpIUUZzaDFqXzZPRFFzU1VQTGFrMmdIbkxibmFoT1RYOFpDZmFIc2tlNUdNUzY4Zmhya0R4b2JqT081eWkxQXgteEhVcVRHUDc2NEVfaHNJUUNFU0tKLXFid1dDLWM?oc=5",
+      "title": "【ANAインターコンチネンタルホテル東京×クスミティー】医食同源を体験できる「薬膳アフタヌーンティー」を実食レポート！",
+      "source": "Precious.jp",
+      "url": "https://news.google.com/rss/articles/CBMiTEFVX3lxTE0wb1hGSVdZbHpjNVpld0hJYmRzZFRrdWRNMDVVZGN5TDFRTEVxRmFhSjRzMkdzd1BnWDJJLTJTQ2Y4aUF1ZVd3VDE0bk8?oc=5",
       "publishedAt": "2026-10-16T12:00:00Z",
       "query": "アフタヌーンティー"
     },
     {
-      "title": "【ANAインターコンチネンタルホテル東京×クスミティー】医食同源を体験できる「薬膳アフタヌーンティー」を実食レポート！",
-      "source": "Precious.jp",
-      "url": "https://news.google.com/rss/articles/CBMiTEFVX3lxTE0wb1hGSVdZbHpjNVpld0hJYmRzZFRrdWRNMDVVZGN5TDFRTEVxRmFhSjRzMkdzd1BnWDJJLTJTQ2Y4aUF1ZVd3VDE0bk8?oc=5",
+      "title": "「グランドニッコー東京 台場」が冬のアフタヌーンティー 白銀の城をイメージ（みんなの経済新聞ネットワーク）",
+      "source": "Yahoo!ニュース",
+      "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE9ldHpPcjVvb0NsazMyOVZtRGtGblF5UDhreHpIUUZzaDFqXzZPRFFzU1VQTGFrMmdIbkxibmFoT1RYOFpDZmFIc2tlNUdNUzY4Zmhya0R4b2JqT081eWkxQXgteEhVcVRHUDc2NEVfaHNJUUNFU0tKLXFid1dDLWM?oc=5",
       "publishedAt": "2026-10-16T12:00:00Z",
       "query": "アフタヌーンティー"
     },
@@ -64,6 +85,13 @@
       "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTFBqZWtGQ3hYUXlHemhHSHM3cmNGVFhJR0x0WFFvRlB6dS1XeEVtTTJvNlY2ZERrcjl1SzJ2UXN6a3U0LU1xRkpEek5fd1dPNFd3V3l4eUUyTlRmUDVHT19F?oc=5",
       "publishedAt": "2026-10-16T11:30:40Z",
       "query": "アフタヌーンティー"
+    },
+    {
+      "title": "【10月新作！fweeの「紅茶リップ」第2弾】ブラックティー70%など3本をイエベ春目線でレビュー",
+      "source": "MAQUIA",
+      "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE0xcGxncTVTdW9WWjJUTzVldlNKWDJackJkYTQzQmgxRF9iTUlwWFFlUlpQYXBjODNvZFBMckVxWkhIS3F1aW9yMElVV2RzNi1zWE44V3E4QjVLQ05SSkM0?oc=5",
+      "publishedAt": "2026-10-16T11:21:00Z",
+      "query": "紅茶"
     },
     {
       "title": "【2026年】クリスマスを待つ贅沢！紅茶のアドベントカレンダー3選（サンキュ！）",
@@ -115,25 +143,11 @@
       "query": "アフタヌーンティー"
     },
     {
-      "title": "吉瀬美智子「長女がお休みなのでアフタヌーンティー」休日ママの姿にファン「いつ見ても綺麗」「美人」",
-      "source": "スポニチ Sponichi Annex",
-      "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxNYkRDZ1gwTTNJdnpXWUhxc1lCX2E4a05QeUl3TDFPalJ4clBhSWVDVlF3dktKZWw0Y3BLbWxoSmxMbm0zYzEycDF1ZjJqSXRlYTA1cEpTSHYwZXZDYVhMMVVMU2RCQ0YxcHJjSUlreXNfak4xdWVBS0dzQUxENGJJS3ZGQmZMd3RkTGxFdXVmRUZTSUkxVFE?oc=5",
-      "publishedAt": "2026-10-16T08:35:00Z",
-      "query": "アフタヌーンティー"
-    },
-    {
       "title": "ファミマのAfternoon Tea監修ドリンクが秋冬仕様に！ アップルティーや黒糖ミルクティーも",
       "source": "ASCII.jp",
       "url": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE5Hc3pGRU5FaThCbERHbFJUbWpjcnFubTNwU0dVcWN3TnhjVEFQVXN4TnBXaG1rR0Q4TWM3N0Q2bE5qYTNzR0lQWDBlSUNmOVRFZGo4enZyc2NSUzZndFprMA?oc=5",
       "publishedAt": "2026-10-16T08:00:00Z",
       "query": "紅茶"
-    },
-    {
-      "title": "栗のパフェや、和を取り入れたグルテンフリーのアフタヌーンティー",
-      "source": "STORY",
-      "url": "https://news.google.com/rss/articles/CBMiS0FVX3lxTE94MUNwTnI3bDVPZGF1U2ZKd1NFT01pd0V6aXlnWjNheGlqWkhOcGY0VWxuSVRfZmh1X3E3WnJxX3JWdDhoMGlUQnpyRQ?oc=5",
-      "publishedAt": "2026-10-16T07:19:49Z",
-      "query": "アフタヌーンティー"
     },
     {
       "title": "既存品の購入を新シリーズの認知へ 午後の紅茶 TEA LATTEの発売記念キャンペーン",
@@ -150,24 +164,17 @@
       "query": "紅茶"
     },
     {
+      "title": "“栗×ショコラ×紅茶”の濃厚トリプル競演！最上階で愉しむ、秋色アフタヌーンティー",
+      "source": "PR TIMES",
+      "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE9XR1VMWHMzMjlXdm5BRUF5R2ZHSnFrWFBQdkpSSUt1LVdnUTZhNzR2Z3p4eFdsNmdRby11OXJTVllPNlctaF8zM2VmODU5NThrUkk5Ri05cnNiLUxWTVp4VlpiUUlmdVh6RHc?oc=5",
+      "publishedAt": "2026-10-16T05:00:02Z",
+      "query": "紅茶"
+    },
+    {
       "title": "【2026最新】ミルクティー好き必見！春水堂やAfternoonTeaの新作ドリンク&スイーツ8選",
       "source": "いこーよニュース",
       "url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTFBRa0UzdThGYTRBWDJCaXJaRVhjWmo4dDJjckVoYlBkRl92QVJzUjJpOGR3OU5YT2NMaUQwdkZmT2tCYXNfQ0lualpZbVltTXcxTWc?oc=5",
       "publishedAt": "2026-10-16T04:59:05Z",
-      "query": "紅茶"
-    },
-    {
-      "title": "キリン 午後の紅茶 紅茶のうれしいヒミツ篇",
-      "source": "YouTube",
-      "url": "https://news.google.com/rss/articles/CBMiQkFVX3lxTFBEM0FhdkxHSXVHOVZvRHVSSHlydmc4ZEZwb19jWTgtZ2ZIOGNSWjBGY1A1dU1HcmZwZ1Nyak82QnpNZw?oc=5",
-      "publishedAt": "2026-10-16T01:00:00Z",
-      "query": "紅茶"
-    },
-    {
-      "title": "中条あやみさんも知らなかった、食事の油っこさを流してくれる「紅茶のうれしいヒミツ」。新CM、10月19日（月）より順次放映・配信開始。",
-      "source": "Excite エキサイト",
-      "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTFBUQnplUl9hS3Z5SzBzbjBiM2xRcGFmMDJLYjl3czFrVG5jekRtc0tpajdLNjV0UFRwemc4WWlTalM2cW5NOVJOVVJKRUpWcWd2ZVVhY1ZuN0lFU09vNDZ3eldQRExZazZ5X0lnaVE4aDBXQ05P?oc=5",
-      "publishedAt": "2026-10-16T00:45:00Z",
       "query": "紅茶"
     },
     {
@@ -192,24 +199,24 @@
       "query": "紅茶"
     },
     {
-      "title": "関連動画 | 中条あやみ、貴婦人＆パーカー姿のギャップで魅了 紅茶好きエピソード明かす【コメント全文】",
-      "source": "オリコンニュース",
-      "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE1qNlNROFRncDJfU0IzVEVtbkUxQjVoZFNuTXVnT1ZuNlFDUmtjVE03WjJ0UTQ3U2hIQkRsU19zU044VWdDVll2N2NoSVotNjB5MGVvSTNJd2FaX3RhX3NNZVZGN3VpS1hMYlE?oc=5",
+      "title": "中条あやみさんも知らなかった、食事の油っこさを流してくれる「紅茶のうれしいヒミツ」。新CM、10月19日（月）より順次放映・配信開始。",
+      "source": "PR TIMES",
+      "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE1zYVV5cjBXeEgzcGs2Z1lvcFFEZVdsMGZFX3lBLXc5MjFnNlpzcUNmQl9mYmoyOHQ1akNpMTdwRGpqUHNPNlRPQ3RBaTJyWlFZR3pySVlRMk9DcUNicXBSSzdLRmJRWHFGN1E?oc=5",
+      "publishedAt": "2026-10-15T19:00:02Z",
+      "query": "紅茶"
+    },
+    {
+      "title": "中条あやみ、貴婦人＆パーカー姿のギャップで魅了 紅茶好きエピソード明かす【コメント全文】",
+      "source": "佐賀新聞",
+      "url": "https://news.google.com/rss/articles/CBMiVkFVX3lxTE0wcjIyUnNYalpiMGVSeHRvVHJMc3VWalRmMzh5MTQyU3lvdGs2Z090VkpIRERocFdId1U2eTVFNlJxN05UOHhpbkdRdmdsOUdTdzVYdzFR?oc=5",
       "publishedAt": "2026-10-15T19:00:00Z",
       "query": "紅茶"
     },
     {
-      "title": "コーヒー・コーヒー用クリーム・紅茶特集：森永乳業 王道感、トレンド軸に",
-      "source": "日本食糧新聞・電子版",
-      "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTFBEb0tMRFFlOVdRTFJoTHdnanlsLTR4ZXVTT1pVemJHWE50UUR1eVV4ekhodzlwUVNNbEx4QUROaUFEZ2IteURGaTNlVTU0cVkzb2hXNWxMWXdOQUtBU2ctajVEMjh5dw?oc=5",
-      "publishedAt": "2026-10-15T15:09:45Z",
-      "query": "紅茶"
-    },
-    {
-      "title": "今年の喫茶来（きっさこ）もセミナーやワークショップが充実！お茶をあらゆる角度から体感しよう お茶の造詣を深める４日間",
-      "source": "ニコニコニュース",
-      "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE1wZU5XcDd0UkhReU05NDVYOFo2NXVNMFhPa09hNFlMajVINk9TaG1iZjZpcU95U2ZRNXJSbWxVOW1NeHFuTDF5UW55UlRYZl9JOFdIeDBTTjdJZ2R1MVZmTEdYWjVaajliUW9MWEpycmNxUXVtZGxiOEIxVQ?oc=5",
-      "publishedAt": "2026-10-15T12:30:26Z",
+      "title": "関連動画 | 中条あやみ、貴婦人＆パーカー姿のギャップで魅了 紅茶好きエピソード明かす【コメント全文】",
+      "source": "オリコンニュース",
+      "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE1qNlNROFRncDJfU0IzVEVtbkUxQjVoZFNuTXVnT1ZuNlFDUmtjVE03WjJ0UTQ3U2hIQkRsU19zU044VWdDVll2N2NoSVotNjB5MGVvSTNJd2FaX3RhX3NNZVZGN3VpS1hMYlE?oc=5",
+      "publishedAt": "2026-10-15T19:00:00Z",
       "query": "紅茶"
     },
     {
@@ -266,13 +273,6 @@
       "source": "つながるさがし",
       "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTFBZSzVlc1dlbGRuMlZmWEM4RFc0aDdvSkd6d1pBenM1dDlVeV9Qamg4cXhuWVZuNE5yUGpOaUp4eDNQaVZGNDJ1MTJtNm91REdxekhwUjdEbHN1bnc?oc=5",
       "publishedAt": "2026-10-14T01:08:58Z",
-      "query": "和紅茶"
-    },
-    {
-      "title": "茶を使った３種のチョコ商品化 和紅茶、抹茶、ほうじ茶 イシヤマユウエン合同会社",
-      "source": "山陽新聞",
-      "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE9JNHdMWFcwT2tTc3NoMU04eXNYeUJtN3pkUUxOaDBQdzd0Y214Qnl0ckpQajBnV1hzVlh6ODlxcl9JbUN3RkcwS3J2b0lCY25IMFlvQnpJYk9aNWEyeF9YaGxOcUJ6RUE?oc=5",
-      "publishedAt": "2026-10-13T07:00:00Z",
       "query": "和紅茶"
     },
     {
