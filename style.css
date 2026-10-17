@@ -114,6 +114,8 @@ a { color: inherit; text-decoration: none; }
 }
 /* スクロール領域の中で、overflow 指定のある要素（ヘッダー・横スクロール）が縮まないようにする */
 .view > * { flex-shrink: 0; }
+/* タイマー画面は1画面に収める（下の小さなタイマー表示は出ないので、そのための余白はいらない） */
+.view[data-route="timer"] { padding-bottom: 20px; }
 
 .tabbar {
   flex: none;
@@ -277,7 +279,8 @@ a { color: inherit; text-decoration: none; }
 .param input { padding: 4px 0 !important; }
 .param select { text-align: center; text-align-last: center; font-weight: 700; font-size: 16px; color: var(--ink); padding: 4px 0 !important; }
 .param input { text-align: center; font-weight: 700; font-size: 16px; color: var(--ink); }
-.ring-wrap { position: relative; width: min(260px, 68vw); aspect-ratio: 1; margin: 6px auto 2px; }
+/* 円の大きさは、画面の幅と高さの両方に合わせる（低い画面でもスクロールせずに収まるように） */
+.ring-wrap { position: relative; width: min(260px, 68vw, max(180px, 100vh - 490px)); aspect-ratio: 1; margin: 6px auto 2px; container-type: inline-size; }
 /* 時間になったら、数字を薄く透かして、その上に「お茶が入りました」と操作を重ねる */
 .ring-wrap.is-done .ring-center { opacity: .18; }
 .done-over {
@@ -290,6 +293,14 @@ a { color: inherit; text-decoration: none; }
 .done-over .check { flex-wrap: wrap; justify-content: center; gap: 2px 6px; font-size: 12px; line-height: 1.4; }
 .done-over .check small { color: var(--muted); }
 .done-btns { display: flex; flex-direction: column; align-items: stretch; gap: 6px; width: 70%; }
+/* 円が小さい（画面が低い）ときは、円より少し大きく重ね、ボタンを横に並べて収める */
+@container (max-width: 230px) {
+  .done-over { inset: -10px; gap: 6px; padding: 0 12px; }
+  .done-title { font-size: 16px; }
+  .done-over .check { font-size: 11px; }
+  .done-btns { flex-direction: row; justify-content: center; width: auto; }
+  .done-btns .btn { min-height: 32px; padding: 0 10px; font-size: 12px; }
+}
 .timer-btns[hidden] { display: none; }
 .ring { width: 100%; height: 100%; transform: rotate(-90deg); filter: drop-shadow(0 6px 14px rgba(154, 63, 28, .18)); }
 .ring-bg { fill: none; stroke: var(--surface-2); stroke-width: 12; }
@@ -298,7 +309,7 @@ a { color: inherit; text-decoration: none; }
 .ring-stop-2 { stop-color: var(--accent); }
 .ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
 .ring-label { max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; font-weight: 700; color: var(--accent); letter-spacing: .05em; }
-.digits { font-size: 58px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; letter-spacing: .02em; }
+.digits { font-size: min(58px, 22cqw); font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; letter-spacing: .02em; }
 /* 真ん中の数字をタップして時間を変える：数字の左（分）と右（秒）に、見えない選択欄を重ねる */
 .digits-wrap { position: relative; }
 .mmss-over { position: absolute; inset: -6px -10px; }
@@ -307,7 +318,7 @@ a { color: inherit; text-decoration: none; }
 .mmss-over select + b + select { flex: 3; } /* 「3:30」の「:」のあたりで分と秒を分ける */
 .mmss-over b { display: none; }
 .digits-wrap:has(select:focus-visible) .digits { text-decoration: underline; text-underline-offset: 6px; }
-.tap-hint { font-size: 11px; color: var(--muted); }
+.tap-hint { font-size: min(11px, 4.4cqw); color: var(--muted); }
 .timer-btns { display: flex; align-items: center; justify-content: center; gap: 10px; }
 
 /* ---------- フォーム ---------- */

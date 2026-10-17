@@ -61,6 +61,7 @@
       noteQuery = '';
     }
     view.innerHTML = (routes[name] || viewHome)();
+    view.dataset.route = name; // 画面ごとの見た目の調整に使う（style.css）
     Photos.hydrate(view);
     const tab = { tea: 'teas', stats: 'notes' }[name] || name;
     $$('.tabbar a').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
@@ -370,7 +371,7 @@
             ${editable ? `<span class="mmss-over">${mmssPicker(c.seconds, 'data-time-param="seconds"')}</span>` : ''}
           </div>
           <p class="muted">${esc(c.temp)}℃・${esc(c.amount)}${esc(c.unit)}・${esc(c.water)}ml</p>
-          ${editable ? '<p class="tap-hint">数字をタップして時間を変更</p>' : ''}
+          ${editable ? '<p class="tap-hint">数字をタップして変更</p>' : ''}
         </div>
         ${s.done ? `
           <div class="done-over" role="group" aria-label="お茶が入りました">
