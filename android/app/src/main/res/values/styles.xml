@@ -13,6 +13,10 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:background">@null</item>
+        <!-- 古い Android（画面の端まで描かない機種）では、ステータスバーの裏に見えるウィンドウの背景を
+             ヘッダーと同じ色にする（Capacitor がステータスバーを透明にするため、背景色が透けて見える） -->
+        <item name="android:windowBackground">@color/ic_launcher_background</item>
+        <item name="android:statusBarColor">@color/ic_launcher_background</item>
     </style>
 
     <!-- 起動時の画面：アプリの色の背景に、カップのアイコンを表示する -->
